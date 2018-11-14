@@ -1,0 +1,75 @@
+## List of default log locations for BigFix installations
+## Consult your BigFix administrator and modify them to suit your environment
+## Also remember to define the index your BigFix data will flow to
+
+## Windows Client log
+[monitor://C:\Program Files (x86)\BigFix Enterprise\BES Client\__BESData\__Global\Logs]
+sourcetype = bigfix:client:log
+disabled = 1
+
+## *Nix Client log
+[monitor:///var/opt/BESClient/__BESData/__Global/Logs]
+sourcetype = bigfix:client:log
+disabled = 1
+
+## Mac OSX Client log
+[monitor:///Library/Application Support/Bigfix/BES Agent/__BESData/__Global/Logs]
+sourcetype = bigfix:client:log
+disabled = 1
+
+## Windows Core Server logs
+[monitor://C:\Program Files (x86)\BigFix Enterprise\BES Server\BESRelay.log]
+sourcetype = bigfix:server:log
+disabled = 1
+
+[monitor://C:\Program Files (x86)\BigFix Enterprise\BES Server\FillDBData\FillDB.log]
+sourcetype = bigfix:filldb:log
+disabled = 1
+
+[monitor://C:\Program Files (x86)\BigFix Enterprise\BES Server\GatherDBData\GatherDB.log]
+sourcetype = bigfix:gatherdb:log
+disabled = 1
+
+[monitor://C:\Program Files (x86)\BigFix Enterprise\BES Server\server_audit.log]
+sourcetype = bigfix:server:audit:log
+disabled = 1
+
+## Linux Core Server logs
+[monitor:///var/log/BESRelay.log]
+sourcetype = bigfix:server:log
+disabled = 1
+
+[monitor:///var/opt/BESServer/FillDBData/FillDB.log]
+sourcetype = bigfix:filldb:log
+disabled = 1
+
+[monitor:///var/opt/BESServer/GatherDBData/GatherDB.log]
+sourcetype = bigfix:gatherdb:log
+disabled = 1
+
+## Windows Relay log
+[monitor://C:\Program Files (x86)\BigFix Enterprise\BES Relay\logfile.log]
+sourcetype = bigfix:relay:log
+disabled = 1
+
+## Linux Relay log
+[monitor:///var/log/besrelay.log]
+sourcetype = bigfix:relay:log
+disabled = 1
+
+## Web Reports Logs
+## Note: Needs to be enabled
+## http://www-01.ibm.com/support/docview.wss?uid=swg21505914
+[monitor://C:\Program Files (x86)\BigFix Enterprise\BES Server\BESWebReportsServer.log]
+sourcetype = bigfix:webreports:log
+disabled = 1
+
+## Server Automation Logs
+## Logs assocaited with Server Automation component
+## May not be relevant in all environments
+## Logs are automatically sourcetype'd based on path
+[monitor://C:\Program Files (x86)\BigFix Enterprise\BES Server\Applications\Logs\*.log]
+whitelist = (MFS\.|ns\-apps\.|ns\-monitor\-app\.|ns\-notifier\-app\.|pe_console\.)
+disabled = 1
+
+

@@ -1,0 +1,26 @@
+<dashboard theme="light">
+  <label>Assets</label>
+  <search id="assetBase">
+    <query>`bigfix_index` sourcetype=bigfix:asset:list | dedup nt_host | rex "mac\=(?&lt;mac_single&gt;[^\|\,]+)\|?\"\," | rex "ip\=(?&lt;ip_single&gt;[^\|\,]+)\|?\"\,"</query>
+    <earliest>-24h@h</earliest>
+    <latest>now</latest>
+  </search>
+  <row>
+    <panel>
+      <table>
+        <title>Splunk Enterprise Security Asset List</title>
+        <search base="assetBase">
+          <query>| table ip mac nt_host dns owner priority lat log city country bunit category pci_domain is_expected should_timesync should_update</query>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
