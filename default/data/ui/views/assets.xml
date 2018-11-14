@@ -1,16 +1,76 @@
-<dashboard theme="light">
+<form theme="light">
   <label>Assets</label>
-  <search id="assetBase">
-    <query>`bigfix_index` sourcetype=bigfix:asset:list | dedup nt_host | rex "mac\=(?&lt;mac_single&gt;[^\|\,]+)\|?\"\," | rex "ip\=(?&lt;ip_single&gt;[^\|\,]+)\|?\"\,"</query>
-    <earliest>-24h@h</earliest>
-    <latest>now</latest>
-  </search>
+  <description>Use this dashboard to create a working asset list for Splunk Enterprise Security.</description>
+  <fieldset submitButton="false">
+    <input type="link" token="mvadds" searchWhenChanged="true">
+      <label>Multi-Value Addresses</label>
+      <choice value="all">All Multi-Values</choice>
+      <choice value="ip">Multi-Value IP</choice>
+      <choice value="mac">Multi-Value MAC</choice>
+      <default>All Multi-Values</default>
+      <change>
+        <condition value="all">
+          <set token="allMV">true</set>
+          <unset token="mvIP"></unset>
+          <unset token="mvMAC"></unset>
+        </condition>
+        <condition value="ip">
+          <set token="mvIP">true</set>
+          <unset token="allMV"></unset>
+          <unset token="mvMAC"></unset>
+        </condition>
+        <condition value="mac">
+          <set token="mvMAC">true</set>
+          <unset token="allMV"></unset>
+          <unset token="mvIP"></unset>
+        </condition>
+      </change>
+    </input>
+  </fieldset>
   <row>
-    <panel>
+    <panel depends="$allMV$">
       <table>
-        <title>Splunk Enterprise Security Asset List</title>
-        <search base="assetBase">
-          <query>| table ip mac nt_host dns owner priority lat log city country bunit category pci_domain is_expected should_timesync should_update</query>
+        <title>Splunk Enterprise Security Asset List (All Multi-Values)</title>
+        <search>
+          <query>`bigfix_index` sourcetype=bigfix:asset:list | dedup nt_host | table ip mac nt_host dns owner priority lat log city country bunit category pci_domain is_expected should_timesync should_update</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel depends="$mvIP$">
+      <table>
+        <title>Splunk Enterprise Security Asset List  (Multi-Value IP)</title>
+        <search>
+          <query>`bigfix_index` sourcetype=bigfix:asset:list | dedup nt_host | rex "mac\=(?&lt;mac_single&gt;[^\|\,]+)\|?\"\," | table ip mac_single nt_host dns owner priority lat log city country bunit category pci_domain is_expected should_timesync should_update | rename mac_single AS mac</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel depends="$mvMAC$">
+      <table>
+        <title>Splunk Enterprise Security Asset List  (Multi-Value MAC)</title>
+        <search>
+          <query>`bigfix_index` sourcetype=bigfix:asset:list | dedup nt_host | rex "ip\=(?&lt;ip_single&gt;[^\|\,]+)\|?\"\," | table ip_single mac nt_host dns owner priority lat log city country bunit category pci_domain is_expected should_timesync should_update | rename ip_single AS ip</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
         </search>
         <option name="count">10</option>
         <option name="dataOverlayMode">none</option>
@@ -23,4 +83,4 @@
       </table>
     </panel>
   </row>
-</dashboard>
+</form>
