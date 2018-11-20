@@ -65,13 +65,13 @@ Once the property is configured in BigFix, you can configure the property name w
 
 This section is to thank the many people who attirbuted the development of this TA by providing relevance, log files, development licenses, and other support.
 
-Jason Walker
-Geetha Alagppan
-Mark "Gunny" Collins
-Mark Spryer
-Eric Howard
-Josh Rice
-James Stewart
-Aram Eblighatian
-Jimmy Glass
-Keith Hutchison
+- Jason Walker
+- Geetha Alagppan
+- Mark "Gunny" Collins
+- Mark Spryer
+- Eric Howard
+- Josh Rice
+- James Stewart
+- Aram Eblighatian
+- Jimmy Glass
+- Keith Hutchison
