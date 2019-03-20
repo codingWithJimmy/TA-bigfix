@@ -1,312 +1,312 @@
 {
-    "meta": {
-        "version": "1.0.0", 
-        "restRoot": "TA_bigfix", 
-        "apiVersion": "3.0.0", 
-        "name": "TA-bigfix", 
-        "displayName": "BigFix TA"
-    }, 
     "pages": {
         "configuration": {
+            "title": "Configuration", 
+            "description": "Set up your add-on", 
             "tabs": [
                 {
+                    "title": "Account", 
+                    "name": "account", 
                     "entity": [
                         {
-                            "field": "name", 
                             "validators": [
                                 {
-                                    "minLength": 1, 
                                     "maxLength": 50, 
+                                    "type": "string", 
                                     "errorMsg": "Length of Account name should be between 1 and 50", 
-                                    "type": "string"
+                                    "minLength": 1
                                 }, 
                                 {
-                                    "pattern": "^[a-zA-Z]\\w*$", 
+                                    "type": "regex", 
                                     "errorMsg": "Account name must start with a letter and followed by alphabetic letters, digits or underscores.", 
-                                    "type": "regex"
+                                    "pattern": "^[a-zA-Z]\\w*$"
                                 }
                             ], 
                             "help": "Enter a unique name for this account.", 
-                            "required": true, 
+                            "field": "name", 
                             "label": "Account name", 
-                            "type": "text"
+                            "type": "text", 
+                            "required": true
                         }, 
                         {
-                            "field": "username", 
                             "validators": [
                                 {
-                                    "minLength": 1, 
                                     "maxLength": 200, 
+                                    "type": "string", 
                                     "errorMsg": "Length of username should be between 1 and 200", 
-                                    "type": "string"
+                                    "minLength": 1
                                 }
                             ], 
-                            "help": "Enter the username for this account.", 
                             "options": {
                                 "placeholder": "Enter the username here"
                             }, 
-                            "required": true, 
+                            "field": "username", 
+                            "help": "Enter the username for this account.", 
                             "label": "Username", 
-                            "type": "text"
+                            "type": "text", 
+                            "required": true
                         }, 
                         {
-                            "field": "password", 
                             "validators": [
                                 {
-                                    "minLength": 1, 
                                     "maxLength": 8192, 
+                                    "type": "string", 
                                     "errorMsg": "Length of password should be between 1 and 8192", 
-                                    "type": "string"
+                                    "minLength": 1
                                 }
                             ], 
                             "help": "Enter the password for this account.", 
-                            "required": true, 
-                            "encrypted": true, 
+                            "field": "password", 
                             "label": "Password", 
-                            "type": "text"
+                            "type": "text", 
+                            "required": true, 
+                            "encrypted": true
                         }
                     ], 
                     "table": {
-                        "header": [
-                            {
-                                "field": "name", 
-                                "label": "Account name"
-                            }, 
-                            {
-                                "field": "username", 
-                                "label": "Username"
-                            }
-                        ], 
                         "actions": [
                             "edit", 
                             "delete", 
                             "clone"
+                        ], 
+                        "header": [
+                            {
+                                "label": "Account name", 
+                                "field": "name"
+                            }, 
+                            {
+                                "label": "Username", 
+                                "field": "username"
+                            }
                         ]
-                    }, 
-                    "title": "Account", 
-                    "name": "account"
+                    }
                 }, 
                 {
+                    "title": "Logging", 
+                    "name": "logging", 
                     "entity": [
                         {
-                            "defaultValue": "INFO", 
-                            "field": "loglevel", 
                             "label": "Log level", 
+                            "type": "singleSelect", 
                             "options": {
+                                "disableSearch": true, 
                                 "autoCompleteFields": [
                                     {
-                                        "label": "DEBUG", 
-                                        "value": "DEBUG"
+                                        "value": "DEBUG", 
+                                        "label": "DEBUG"
                                     }, 
                                     {
-                                        "label": "INFO", 
-                                        "value": "INFO"
+                                        "value": "INFO", 
+                                        "label": "INFO"
                                     }, 
                                     {
-                                        "label": "WARNING", 
-                                        "value": "WARNING"
+                                        "value": "WARNING", 
+                                        "label": "WARNING"
                                     }, 
                                     {
-                                        "label": "ERROR", 
-                                        "value": "ERROR"
+                                        "value": "ERROR", 
+                                        "label": "ERROR"
                                     }, 
                                     {
-                                        "label": "CRITICAL", 
-                                        "value": "CRITICAL"
+                                        "value": "CRITICAL", 
+                                        "label": "CRITICAL"
                                     }
-                                ], 
-                                "disableSearch": true
+                                ]
                             }, 
-                            "type": "singleSelect"
+                            "defaultValue": "INFO", 
+                            "field": "loglevel"
                         }
-                    ], 
-                    "title": "Logging", 
-                    "name": "logging"
+                    ]
                 }, 
                 {
+                    "title": "Add-on Settings", 
+                    "name": "additional_parameters", 
                     "entity": [
                         {
-                            "defaultValue": "", 
-                            "field": "bigfix_server_url", 
                             "validators": [
                                 {
-                                    "minLength": 0, 
                                     "maxLength": 8192, 
+                                    "type": "string", 
                                     "errorMsg": "Max length of text input is 8192", 
-                                    "type": "string"
+                                    "minLength": 0
                                 }
                             ], 
                             "help": "URLof the BigFix Server", 
-                            "required": false, 
+                            "defaultValue": "", 
+                            "field": "bigfix_server_url", 
                             "label": "BigFix Server URL", 
-                            "type": "text"
+                            "type": "text", 
+                            "required": false
                         }, 
                         {
-                            "defaultValue": "52311", 
-                            "field": "bigfix_server_port", 
                             "validators": [
                                 {
-                                    "minLength": 0, 
                                     "maxLength": 8192, 
+                                    "type": "string", 
                                     "errorMsg": "Max length of text input is 8192", 
-                                    "type": "string"
+                                    "minLength": 0
                                 }
                             ], 
                             "help": "Port number assigned to BigFix (default: 52311)", 
-                            "required": false, 
+                            "defaultValue": "52311", 
+                            "field": "bigfix_server_port", 
                             "label": "BigFix Server Port", 
-                            "type": "text"
+                            "type": "text", 
+                            "required": false
                         }
-                    ], 
-                    "title": "Add-on Settings", 
-                    "name": "additional_parameters"
+                    ]
                 }
-            ], 
-            "title": "Configuration", 
-            "description": "Set up your add-on"
+            ]
         }, 
         "inputs": {
+            "title": "Inputs", 
+            "description": "Manage your data inputs", 
+            "services": [
+                {
+                    "title": "BigFix Asset List", 
+                    "name": "bigfix_asset_list", 
+                    "entity": [
+                        {
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "pattern": "^[a-zA-Z]\\w*$"
+                                }, 
+                                {
+                                    "maxLength": 100, 
+                                    "type": "string", 
+                                    "errorMsg": "Length of input name should be between 1 and 100", 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "help": "Enter a unique name for the data input", 
+                            "field": "name", 
+                            "label": "Name", 
+                            "type": "text", 
+                            "required": true
+                        }, 
+                        {
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Interval must be an integer.", 
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
+                                }
+                            ], 
+                            "help": "Time interval of input in seconds.", 
+                            "field": "interval", 
+                            "label": "Interval", 
+                            "type": "text", 
+                            "required": true
+                        }, 
+                        {
+                            "validators": [
+                                {
+                                    "maxLength": 80, 
+                                    "type": "string", 
+                                    "errorMsg": "Length of index name should be between 1 and 80.", 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "options": {
+                                "endpointUrl": "data/indexes", 
+                                "createSearchChoice": true, 
+                                "blackList": "^_.*$"
+                            }, 
+                            "defaultValue": "default", 
+                            "field": "index", 
+                            "label": "Index", 
+                            "type": "singleSelect", 
+                            "required": true
+                        }, 
+                        {
+                            "options": {
+                                "referenceName": "account"
+                            }, 
+                            "field": "global_account", 
+                            "help": "", 
+                            "label": "Global Account", 
+                            "type": "singleSelect", 
+                            "required": true
+                        }, 
+                        {
+                            "validators": [
+                                {
+                                    "maxLength": 8192, 
+                                    "type": "string", 
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "help": "BigFix property name that provides the MAC address for BigFix clients", 
+                            "field": "mac_address_property", 
+                            "label": "MAC Address Property", 
+                            "type": "text", 
+                            "required": true
+                        }
+                    ]
+                }
+            ], 
             "table": {
-                "moreInfo": [
-                    {
-                        "field": "name", 
-                        "label": "Name"
-                    }, 
-                    {
-                        "field": "interval", 
-                        "label": "Interval"
-                    }, 
-                    {
-                        "field": "index", 
-                        "label": "Index"
-                    }, 
-                    {
-                        "field": "disabled", 
-                        "label": "Status"
-                    }, 
-                    {
-                        "field": "global_account", 
-                        "label": "Global Account"
-                    }, 
-                    {
-                        "field": "mac_address_property", 
-                        "label": "MAC Address Property"
-                    }
-                ], 
-                "header": [
-                    {
-                        "field": "name", 
-                        "label": "Name"
-                    }, 
-                    {
-                        "field": "interval", 
-                        "label": "Interval"
-                    }, 
-                    {
-                        "field": "index", 
-                        "label": "Index"
-                    }, 
-                    {
-                        "field": "disabled", 
-                        "label": "Status"
-                    }
-                ], 
                 "actions": [
                     "edit", 
                     "enable", 
                     "delete", 
                     "clone"
+                ], 
+                "moreInfo": [
+                    {
+                        "label": "Name", 
+                        "field": "name"
+                    }, 
+                    {
+                        "label": "Interval", 
+                        "field": "interval"
+                    }, 
+                    {
+                        "label": "Index", 
+                        "field": "index"
+                    }, 
+                    {
+                        "label": "Status", 
+                        "field": "disabled"
+                    }, 
+                    {
+                        "label": "Global Account", 
+                        "field": "global_account"
+                    }, 
+                    {
+                        "label": "MAC Address Property", 
+                        "field": "mac_address_property"
+                    }
+                ], 
+                "header": [
+                    {
+                        "label": "Name", 
+                        "field": "name"
+                    }, 
+                    {
+                        "label": "Interval", 
+                        "field": "interval"
+                    }, 
+                    {
+                        "label": "Index", 
+                        "field": "index"
+                    }, 
+                    {
+                        "label": "Status", 
+                        "field": "disabled"
+                    }
                 ]
-            }, 
-            "services": [
-                {
-                    "entity": [
-                        {
-                            "field": "name", 
-                            "validators": [
-                                {
-                                    "pattern": "^[a-zA-Z]\\w*$", 
-                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
-                                    "type": "regex"
-                                }, 
-                                {
-                                    "minLength": 1, 
-                                    "maxLength": 100, 
-                                    "errorMsg": "Length of input name should be between 1 and 100", 
-                                    "type": "string"
-                                }
-                            ], 
-                            "help": "Enter a unique name for the data input", 
-                            "required": true, 
-                            "label": "Name", 
-                            "type": "text"
-                        }, 
-                        {
-                            "field": "interval", 
-                            "validators": [
-                                {
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$", 
-                                    "errorMsg": "Interval must be an integer.", 
-                                    "type": "regex"
-                                }
-                            ], 
-                            "help": "Time interval of input in seconds.", 
-                            "required": true, 
-                            "label": "Interval", 
-                            "type": "text"
-                        }, 
-                        {
-                            "defaultValue": "default", 
-                            "field": "index", 
-                            "validators": [
-                                {
-                                    "minLength": 1, 
-                                    "maxLength": 80, 
-                                    "errorMsg": "Length of index name should be between 1 and 80.", 
-                                    "type": "string"
-                                }
-                            ], 
-                            "options": {
-                                "createSearchChoice": true, 
-                                "blackList": "^_.*$", 
-                                "endpointUrl": "data/indexes"
-                            }, 
-                            "required": true, 
-                            "label": "Index", 
-                            "type": "singleSelect"
-                        }, 
-                        {
-                            "field": "global_account", 
-                            "help": "", 
-                            "options": {
-                                "referenceName": "account"
-                            }, 
-                            "required": true, 
-                            "label": "Global Account", 
-                            "type": "singleSelect"
-                        }, 
-                        {
-                            "field": "mac_address_property", 
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "maxLength": 8192, 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "type": "string"
-                                }
-                            ], 
-                            "help": "BigFix property name that provides the MAC address for BigFix clients", 
-                            "required": true, 
-                            "label": "MAC Address Property", 
-                            "type": "text"
-                        }
-                    ], 
-                    "title": "BigFix Asset List", 
-                    "name": "bigfix_asset_list"
-                }
-            ], 
-            "title": "Inputs", 
-            "description": "Manage your data inputs"
+            }
         }
+    }, 
+    "meta": {
+        "apiVersion": "3.0.0", 
+        "restRoot": "TA_bigfix", 
+        "displayName": "BigFix TA", 
+        "name": "TA-bigfix", 
+        "version": "1.0.1"
     }
 }
