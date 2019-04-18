@@ -1,0 +1,88 @@
+{
+    "requests": [
+        {
+            "request": {
+                "method": "GET", 
+                "auth": {
+                    "options": {
+                        "username": "{{global_account.username}}", 
+                        "password": "{{global_account.password}}"
+                    }, 
+                    "type": "basic_auth"
+                }, 
+                "headers": {}, 
+                "url": "{{__settings__.additional_parameters.bigfix_server_url}}:{{__settings__.additional_parameters.bigfix_server_port}}/api/query?output=json&relevance=(%22nt_host%3D%22%20%26%20(name%20of%20item%200%20of%20it%20%7C%20%22missing%20Name%22)%2C%20(%22last_report_time%3D%22%20%26%20last%20report%20time%20of%20item%200%20of%20it%20as%20string)%2C%20%22client_id%3D%22%20%26%20(if%20(exists%20id%20of%20item%200%20of%20it)%20then%20id%20of%20item%200%20of%20it%20as%20string%20else%20%22none%22)%2C%20%22status%3D%22%20%26%20item%201%20of%20it%20as%20lowercase%2C%20%22issuer%3D%22%20%26%20item%202%20of%20it%2C%20%22issue_time%3D%22%20%26%20item%203%20of%20it%2C%20%22fixlet_id%3D%22%20%26%20item%206%20of%20it%2C%20%22fixlet_name%3D%22%20%26%20item%207%20of%20it%2C%20%22fixlet_site%3D%22%20%26%20item%208%20of%20it%2C%20%20%22action_id%3D%22%20%26%20item%209%20of%20it%2C%20%22action_name%3D%22%20%26%20item%2010%20of%20it%2C%20%22reapply%3D%22%20%26%20item%2011%20of%20it%20as%20lowercase%2C%20%22restart_required%3D%22%20%26%20item%2012%20of%20it%20as%20lowercase%2C%20%22stopper%3D%22%20%26%20item%2013%20of%20it%2C%20%22time_stopped%3D%22%20%26%20item%2014%20of%20it%2C%20%20%22client_start_time%3D%22%20%26%20item%2016%20of%20it%2C%20%22client_end_time%3D%22%20%26%20item%2017%20of%20it)%20of%20(computers%20of%20item%200%20of%20it%2C%20status%20of%20item%200%20of%20it%20as%20string%2C%20name%20of%20issuer%20of%20item%202%20of%20it%2C%20time%20issued%20of%20item%202%20of%20it%20as%20string%2C%20(if%20(exists%20end%20date%20of%20item%202%20of%20it)%20then%20end%20date%20of%20item%202%20of%20it%20as%20string%20%26%20%22%20%22%20%26%20end%20time_of_day%20of%20item%202%20of%20it%20as%20string%20else%20%22%22)%2C%20(if%20(exists%20start%20date%20of%20item%202%20of%20it)%20then%20start%20date%20of%20item%202%20of%20it%20as%20string%20%26%20%22%20%22%20%26%20start%20time_of_day%20of%20item%202%20of%20it%20as%20string%20else%20%22%22)%2C%20id%20of%20item%201%20of%20it%20as%20string%2C%20(concatenation%20%22%252527%22%20of%20(substrings%20separated%20by%20%22%252522%22%20of%20name%20of%20item%201%20of%20it))%2C%20display%20name%20of%20site%20of%20item%201%20of%20it%2C%20id%20of%20item%202%20of%20it%20as%20string%2C%20(concatenation%20%22%252527%22%20of%20(substrings%20separated%20by%20%22%252522%22%20of%20name%20of%20item%202%20of%20it))%2C%20reapply%20flag%20of%20item%202%20of%20it%20as%20string%2C%20restart%20flag%20of%20item%202%20of%20it%20as%20string%2C%20(if%20(exists%20stopper%20of%20item%202%20of%20it)%20then%20name%20of%20stopper%20of%20item%202%20of%20it%20as%20string%20else%20%22%22)%2C%20(if%20(exists%20time%20stopped%20of%20item%202%20of%20it)%20then%20time%20stopped%20of%20item%202%20of%20it%20as%20string%20else%20%22%22)%2C%20item%203%20of%20it%20%2C%20start%20time%20of%20item%200%20of%20it%20as%20string%20%7C%22NoStartTime%22%20%2C%20end%20time%20of%20item%200%20of%20it%20as%20string%20%7C%22NoEndTime%22%20%20%20)%20of%20(results%20of%20item%200%20of%20it%2C%20source%20fixlets%20of%20item%200%20of%20it%2C%20item%200%20of%20it%2C%20item%201%20of%20it)%20of%20(bes%20actions%2C%20(url%20of%20it%20as%20string)%20of%20current%20bes%20server)"
+            }, 
+            "iteration_mode": {
+                "stop_conditions": [
+                    {
+                        "method": "json_empty", 
+                        "input": [
+                            "{{__response__.body}}", 
+                            "$.result"
+                        ]
+                    }
+                ], 
+                "iteration_count": "1"
+            }, 
+            "pre_process": {
+                "skip_conditions": [], 
+                "pipeline": []
+            }, 
+            "post_process": {
+                "skip_conditions": [
+                    {
+                        "method": "json_empty", 
+                        "input": [
+                            "{{__response__.body}}", 
+                            "$.result"
+                        ]
+                    }
+                ], 
+                "pipeline": [
+                    {
+                        "method": "json_path", 
+                        "output": "__stdout__", 
+                        "input": [
+                            "{{__response__.body}}", 
+                            "$.result"
+                        ]
+                    }, 
+                    {
+                        "method": "splunk_xml", 
+                        "output": "__stdout__", 
+                        "input": [
+                            "{{__stdout__}}", 
+                            "", 
+                            "{{index}}", 
+                            "{{host}}", 
+                            "{{source}}", 
+                            "{{sourcetype}}"
+                        ]
+                    }, 
+                    {
+                        "method": "std_output", 
+                        "input": [
+                            "{{__stdout__}}"
+                        ]
+                    }
+                ]
+            }
+        }
+    ], 
+    "tokens": [
+        "__settings__.logging.loglevel", 
+        "__settings__.additional_parameters.bigfix_server_url", 
+        "__settings__.additional_parameters.bigfix_server_port", 
+        "global_account.username", 
+        "global_account.password"
+    ], 
+    "meta": {
+        "apiVersion": "1.0.0"
+    }, 
+    "global_settings": {
+        "logging": {
+            "level": "{{__settings__.logging.loglevel}}"
+        }
+    }
+}
