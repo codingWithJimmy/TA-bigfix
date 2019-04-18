@@ -61,6 +61,9 @@ You can use the following relevance to collect the MAC addresses of most systems
 
 Once the property is configured in BigFix, you can configure the property name when you configure the input.
 
+# BigFix Analysis Input
+The BigFix TA contains a configurable REST input for ingesting the results of a specificed analysis within BigFix. This will require the display name of the analysis being imported. Once congfigured, the results are ingested per property result per host in a single event so multiple properties within a single analysis can be identified and evaluated once the events are ingested.
+
 # Acknowledgements
 
 This section is to thank the many people who attirbuted the development of this TA by providing relevance, log files, development licenses, and other support.
