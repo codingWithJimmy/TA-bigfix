@@ -1,32 +1,12 @@
 {
-    "tokens": [
-        "__settings__.logging.loglevel", 
-        "__settings__.additional_parameters.bigfix_server_port", 
-        "__settings__.additional_parameters.bigfix_server_url", 
-        "global_account.username", 
-        "global_account.password", 
-        "mac_address_property"
-    ], 
     "requests": [
         {
             "pre_process": {
-                "skip_conditions": [], 
-                "pipeline": []
+                "pipeline": [], 
+                "skip_conditions": []
             }, 
-            "request": {
-                "method": "GET", 
-                "auth": {
-                    "options": {
-                        "username": "{{global_account.username}}", 
-                        "password": "{{global_account.password}}"
-                    }, 
-                    "type": "basic_auth"
-                }, 
-                "url": "{{__settings__.additional_parameters.bigfix_server_url}}:{{__settings__.additional_parameters.bigfix_server_port}}/api/query?output=json&relevance=(%22nt_host%3D%22%20%26%20(name%20of%20item%200%20of%20it%20%7C%20%22missing%20Name%22)%2C%20(%22last_report_time%3D%22%20%26%20concatenation%20%22%7C%22%20of%20values%20of%20results%20(item%200%20of%20it%2C%20elements%20of%20item%201%20of%20it))%2C%20(%22ip%3D%22%20%26%20(if%20(size%20of%20item%202%20of%20it%20%3D%201)%20then%20(concatenation%20%22%7C%22%20of%20values%20whose%20(it%20as%20string%20does%20not%20start%20with%20%22169.254%22)%20of%20results%20(item%200%20of%20it%2C%20elements%20of%20item%202%20of%20it))%20else%20(if%20(size%20of%20item%202%20of%20it%20%3E%201)%20then%20((%22IP%20Address%20property%20duplicates%3A%20%22%20%26%20concatenation%20%22%7C%22%20of%20((name%20of%20it)%20%26%20%22%3D%22%20%26%20(id%20of%20it%20as%20string))%20of%20elements%20of%20item%202%20of%20it)%20as%20string)%20else%20(%22%22))))%2C%20(%22mac%3D%22%20%26%20(if%20(size%20of%20item%203%20of%20it%20%3D%201)%20then%20(concatenation%20%22%7C%22%20of%20values%20of%20results%20(item%200%20of%20it%2C%20elements%20of%20item%203%20of%20it))%20else%20(if%20(size%20of%20item%203%20of%20it%20%3E%201)%20then%20((%22Property%203%20duplicates%3A%20%22%20%26%20concatenation%20%22%7C%22%20of%20((name%20of%20it)%20%26%20%22%3D%22%20%26%20(id%20of%20it%20as%20string))%20of%20elements%20of%20item%203%20of%20it)%20as%20string)%20else%20(%22%22))))%2C%20(%22dns%3D%22%20%26%20(if%20(size%20of%20item%204%20of%20it%20%3D%201)%20then%20((if%20it%20%3D%20%22%22%20then%20%22%22%20else%20it)%20of%20concatenation%20%22%7C%22%20of%20values%20of%20results%20(item%200%20of%20it%2C%20elements%20of%20item%204%20of%20it))%20else%20(if%20(size%20of%20item%203%20of%20it%20%3E%201)%20then%20((%22Property%203%20duplicates%3A%20%22%20%26%20concatenation%20%22%7C%22%20of%20((name%20of%20it)%20%26%20%22%3D%22%20%26%20(id%20of%20it%20as%20string))%20of%20elements%20of%20item%203%20of%20it)%20as%20string)%20else%20(%22%22))))%2C%20(%22operating_system%3D%22%20%26%20concatenation%20%22%7C%22%20of%20values%20of%20results%20(item%200%20of%20it%2C%20elements%20of%20item%205%20of%20it))%2C%20(%22user%3D%22%20%26%20concatenation%20%22%7C%22%20of%20values%20of%20results%20(item%200%20of%20it%2C%20elements%20of%20item%206%20of%20it)))%20of%20(elements%20of%20item%200%20of%20it%2C%20item%201%20of%20it%2C%20item%202%20of%20it%2C%20item%203%20of%20it%2C%20item%204%20of%20it%2C%20item%205%20of%20it%2C%20item%206%20of%20it)%20of%20(set%20of%20BES%20computers%2C%20set%20of%20bes%20properties%20whose%20(name%20of%20it%20as%20lowercase%20%3D%20(%22Last%20Report%20Time%22)%20as%20lowercase)%2C%20set%20of%20bes%20properties%20whose%20(reserved%20flag%20of%20it%20and%20name%20of%20it%20as%20lowercase%20%3D%20(%22ip%20address%22))%2C%20set%20of%20%20bes%20properties%20whose%20(name%20of%20it%20as%20lowercase%20%3D%20(%22%24%7Bmac_address_property%7D%22)%20as%20lowercase)%2C%20set%20of%20%20bes%20properties%20whose%20(reserved%20flag%20of%20it%20and%20name%20of%20it%20as%20lowercase%20%3D%20(%22dns%20name%22))%2C%20set%20of%20%20bes%20properties%20whose%20(reserved%20flag%20of%20it%20and%20name%20of%20it%20as%20lowercase%20%3D%20(%22os%22))%2C%20set%20of%20bes%20properties%20whose%20(name%20of%20it%20as%20lowercase%20%3D%20(%22user%20name%22)))", 
-                "headers": {}
-            }, 
-            "post_process": {
-                "skip_conditions": [
+            "iteration_mode": {
+                "stop_conditions": [
                     {
                         "method": "json_empty", 
                         "input": [
@@ -35,18 +15,33 @@
                         ]
                     }
                 ], 
+                "iteration_count": "1"
+            }, 
+            "request": {
+                "auth": {
+                    "type": "basic_auth", 
+                    "options": {
+                        "password": "{{global_account.password}}", 
+                        "username": "{{global_account.username}}"
+                    }
+                }, 
+                "method": "GET", 
+                "url": "{{__settings__.additional_parameters.bigfix_server_url}}:{{__settings__.additional_parameters.bigfix_server_port}}/api/query?output=json&relevance=%28%22nt_host%3D%22+%26+%28name+of+item+0+of+it+%7C+%22missing+Name%22%29%2C+%28%22last_report_time%3D%22+%26+concatenation+%22%7C%22+of+values+of+results+%28item+0+of+it%2C+elements+of+item+1+of+it%29%29%2C+%28%22ip%3D%22+%26+%28if+%28size+of+item+2+of+it+%3D+1%29+then+%28concatenation+%22%7C%22+of+values+whose+%28it+as+string+does+not+start+with+%22169.254%22%29+of+results+%28item+0+of+it%2C+elements+of+item+2+of+it%29%29+else+%28if+%28size+of+item+2+of+it+%3E+1%29+then+%28%28%22IP+Address+property+duplicates%3A+%22+%26+concatenation+%22%7C%22+of+%28%28name+of+it%29+%26+%22%3D%22+%26+%28id+of+it+as+string%29%29+of+elements+of+item+2+of+it%29+as+string%29+else+%28%22%22%29%29%29%29%2C+%28%22mac%3D%22+%26+%28if+%28size+of+item+3+of+it+%3D+1%29+then+%28concatenation+%22%7C%22+of+values+of+results+%28item+0+of+it%2C+elements+of+item+3+of+it%29%29+else+%28if+%28size+of+item+3+of+it+%3E+1%29+then+%28%28%22Property+3+duplicates%3A+%22+%26+concatenation+%22%7C%22+of+%28%28name+of+it%29+%26+%22%3D%22+%26+%28id+of+it+as+string%29%29+of+elements+of+item+3+of+it%29+as+string%29+else+%28%22%22%29%29%29%29%2C+%28%22dns%3D%22+%26+%28if+%28size+of+item+4+of+it+%3D+1%29+then+%28%28if+it+%3D+%22%22+then+%22%22+else+it%29+of+concatenation+%22%7C%22+of+values+of+results+%28item+0+of+it%2C+elements+of+item+4+of+it%29%29+else+%28if+%28size+of+item+3+of+it+%3E+1%29+then+%28%28%22Property+3+duplicates%3A+%22+%26+concatenation+%22%7C%22+of+%28%28name+of+it%29+%26+%22%3D%22+%26+%28id+of+it+as+string%29%29+of+elements+of+item+3+of+it%29+as+string%29+else+%28%22%22%29%29%29%29%2C+%28%22operating_system%3D%22+%26+concatenation+%22%7C%22+of+values+of+results+%28item+0+of+it%2C+elements+of+item+5+of+it%29%29%2C+%28%22user%3D%22+%26+concatenation+%22%7C%22+of+values+of+results+%28item+0+of+it%2C+elements+of+item+6+of+it%29%29%29+of+%28elements+of+item+0+of+it%2C+item+1+of+it%2C+item+2+of+it%2C+item+3+of+it%2C+item+4+of+it%2C+item+5+of+it%2C+item+6+of+it%29+of+%28set+of+BES+computers%2C+set+of+bes+properties+whose+%28name+of+it+as+lowercase+%3D+%28%22Last+Report+Time%22%29+as+lowercase%29%2C+set+of+bes+properties+whose+%28reserved+flag+of+it+and+name+of+it+as+lowercase+%3D+%28%22ip+address%22%29%29%2C+set+of++bes+properties+whose+%28name+of+it+as+lowercase+%3D+%28%22{{mac_address_property}}%22%29+as+lowercase%29%2C+set+of++bes+properties+whose+%28reserved+flag+of+it+and+name+of+it+as+lowercase+%3D+%28%22dns+name%22%29%29%2C+set+of++bes+properties+whose+%28reserved+flag+of+it+and+name+of+it+as+lowercase+%3D+%28%22os%22%29%29%2C+set+of+bes+properties+whose+%28name+of+it+as+lowercase+%3D+%28%22user+name%22%29%29%29", 
+                "headers": {}
+            }, 
+            "post_process": {
                 "pipeline": [
                     {
-                        "method": "json_path", 
                         "output": "__stdout__", 
+                        "method": "json_path", 
                         "input": [
                             "{{__response__.body}}", 
                             "$.result"
                         ]
                     }, 
                     {
-                        "method": "splunk_xml", 
                         "output": "__stdout__", 
+                        "method": "splunk_xml", 
                         "input": [
                             "{{__stdout__}}", 
                             "", 
@@ -62,10 +57,8 @@
                             "{{__stdout__}}"
                         ]
                     }
-                ]
-            }, 
-            "iteration_mode": {
-                "stop_conditions": [
+                ], 
+                "skip_conditions": [
                     {
                         "method": "json_empty", 
                         "input": [
@@ -73,17 +66,24 @@
                             "$.result"
                         ]
                     }
-                ], 
-                "iteration_count": "1"
+                ]
             }
         }
+    ], 
+    "meta": {
+        "apiVersion": "1.0.0"
+    }, 
+    "tokens": [
+        "__settings__.logging.loglevel", 
+        "__settings__.additional_parameters.bigfix_server_url", 
+        "__settings__.additional_parameters.bigfix_server_port", 
+        "global_account.username", 
+        "global_account.password", 
+        "mac_address_property"
     ], 
     "global_settings": {
         "logging": {
             "level": "{{__settings__.logging.loglevel}}"
         }
-    }, 
-    "meta": {
-        "apiVersion": "1.0.0"
     }
 }
