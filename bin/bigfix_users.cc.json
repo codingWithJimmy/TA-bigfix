@@ -1,0 +1,88 @@
+{
+    "tokens": [
+        "__settings__.logging.loglevel", 
+        "__settings__.additional_parameters.bigfix_server_port", 
+        "__settings__.additional_parameters.bigfix_server_url", 
+        "global_account.username", 
+        "global_account.password"
+    ], 
+    "requests": [
+        {
+            "pre_process": {
+                "skip_conditions": [], 
+                "pipeline": []
+            }, 
+            "request": {
+                "method": "GET", 
+                "auth": {
+                    "options": {
+                        "username": "{{global_account.username}}", 
+                        "password": "{{global_account.password}}"
+                    }, 
+                    "type": "basic_auth"
+                }, 
+                "url": "{{__settings__.additional_parameters.bigfix_server_url}}:{{__settings__.additional_parameters.bigfix_server_port}}/api/query?output=json&relevance=%28%22name%3D%22+%26+name+of+it%2C+%22master_operator%3D%22+%26+master+flag+of+it+as+string%2C+%22action_count%3D%22+%26+number+of+issued+actions+of+it+as+string%2C+%22creation_time%3D%22+%26+creation+time+of+it+as+string%2C+%22last_login_time%3D%22+%26+%28if+%28exists+last+login+time+of+it%29+then+last+login+time+of+it+as+string+else+%22%22%29%29+of+bes+users", 
+                "headers": {}
+            }, 
+            "post_process": {
+                "skip_conditions": [
+                    {
+                        "method": "json_empty", 
+                        "input": [
+                            "{{__response__.body}}", 
+                            "$.result"
+                        ]
+                    }
+                ], 
+                "pipeline": [
+                    {
+                        "method": "json_path", 
+                        "output": "__stdout__", 
+                        "input": [
+                            "{{__response__.body}}", 
+                            "$.result"
+                        ]
+                    }, 
+                    {
+                        "method": "splunk_xml", 
+                        "output": "__stdout__", 
+                        "input": [
+                            "{{__stdout__}}", 
+                            "", 
+                            "{{index}}", 
+                            "{{host}}", 
+                            "{{source}}", 
+                            "{{sourcetype}}"
+                        ]
+                    }, 
+                    {
+                        "method": "std_output", 
+                        "input": [
+                            "{{__stdout__}}"
+                        ]
+                    }
+                ]
+            }, 
+            "iteration_mode": {
+                "stop_conditions": [
+                    {
+                        "method": "json_empty", 
+                        "input": [
+                            "{{__response__.body}}", 
+                            "$.result"
+                        ]
+                    }
+                ], 
+                "iteration_count": "1"
+            }
+        }
+    ], 
+    "global_settings": {
+        "logging": {
+            "level": "{{__settings__.logging.loglevel}}"
+        }
+    }, 
+    "meta": {
+        "apiVersion": "1.0.0"
+    }
+}

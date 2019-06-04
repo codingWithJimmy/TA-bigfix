@@ -53,7 +53,7 @@ model = RestModel(fields, name=None)
 
 
 endpoint = DataInputModel(
-    'bigfix_relevant_fixlets',
+    'bigfix_users',
     model,
 )
 

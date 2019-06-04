@@ -78,3 +78,4 @@ This section is to thank the many people who attirbuted the development of this 
 - Aram Eblighatian
 - Jimmy Glass
 - Keith Hutchison
+- John Talbert
