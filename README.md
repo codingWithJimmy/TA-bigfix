@@ -1,5 +1,5 @@
 # BigFix TA
-The BigFix TA can be used to configure Splunk to ingest BigFix client, relay, and server logs. There is also a REST input available to format and provide a starting point for "assets.csv" for Splunk Enterprise Security.
+The BigFix TA can be used to configure Splunk to ingest BigFix client, relay, and server logs. It also contains multiple modular inputs to query the REST API of a BigFix core server.
 
 # Installation
 The BigFix TA should be installed on:
@@ -12,10 +12,8 @@ This app can be distributed using a deployment server but the host responsible f
 
 Prior to configuring the add-on, below is a list of requirements to request from the BigFix administrator
 
-1. A console account with login access via REST API only. No other permissions are needed.
-2. The account will need to be subsribed to all hosts that will be brought into the asset list.
-3. A property the BigFix administrator knows will detail a list of MAC addresses for each host.
-4. If necessary, permission to read the site that contains the property for the MAC address if it's not contained within the Master Action Site.
+1. A console account with login access via REST API and to see the actions of others.
+2. The account will need to be subsribed to all hosts and sites where information is to be evaluated from.
 
 # Configuration
 The add-on has configurations included for ingesting raw BigFix component logs for some sources which are listed in the "Sourcetypes" section. The configurations can be found in the "inputs.template" file in the default directory of the add-on. Tailor the app for each BigFix component accordingly. Consult the BigFix administrator for where logs will exist and deploy the configurations accordingly.
@@ -23,15 +21,7 @@ The add-on has configurations included for ingesting raw BigFix component logs f
 First, configure the account and server information for the BigFix deployment
 - Click "Configuration" and add the account username and password provided by the BigFix administrator.
 - Click the "Add-on Settings" tab and fill in the URL to the BigFix server as well as the port configured for BigFix traffic. The default port is 52311 and is filled in already. Consult your BigFix administrator and ensure this is the proper port.
-- Click the "Inputs" tab and click "Create New Input".
-
-Next, configure the Input
-- Click "Inputs" and click "Create New Input"
-- Configure the interval for how often to query the BigFix server for this information
-- Select the index where the data will be stored. If you have a specific index, make sure it's configured prior to enabling this input.
-- Select the account configured in the previous step
-- Configure the provided "MAC Address Porperty" from your BigFix administrator
-- Click "Add"
+- Click the "Inputs" tab and click the "Create New Input" dropdown to configure the modular REST API inputs.
 
 # Sourcetypes
 The BigFix TA uses the following sourcetype format along with the log they currently support:
@@ -51,9 +41,21 @@ bigfix:ape:notifier:monitor:log | BigFix Server Automation Notification Service 
 bigfix:ape:notifier:service:log | BigFix Server Automation Notification Service status 
 bigfix:ape:plan:engine:log | BigFix Server Automation Plan Engine 
 bigfix:compliance:import:log | BigFix Compliance Import Log 
+bigfix:asset:list | BigFix client list using REST (Requires "BES Component Versions" analysis of "BES Support" site to be enabled)
+bigfix:action | BigFix action status export using REST
+bigfix:analysis | BigFix analysis result export using REST
+bigfix:users | BigFix user list export using REST
+bigfix:infrastructure | BigFix infrastructure export using REST (Requires "BES Health Checks" analysis of "BES Support" site to be enabled)
+bigfix:fixlets | BigFix relevant fixlet export using REST
+
 
 # BigFix Asset List Input
 The BigFix TA contains a configurable REST input for collecting the required asset information from a BigFix deployment to be used in a Splunk Enterprise Security implementation. The REST query should return results, even from environments with a large number of clients, in a reasonable amount of time. This requires the coordination with the administrator of BigFix because the field containing the MAC address is not a default property inside of an out-of-the-box BigFix deployment.
+
+Some notes on further requirements for this input:
+
+- A property the BigFix administrator knows will need to be identified which details a list of MAC addresses for each host. This property will need to be configured with the input. If there is a not a currently configured property, the BigFix administrator may use the relevance below to evaluate the property.
+- The account used to perform the query will need permission to, at least, read the site that contains the property for the MAC address if it's not contained within the Master Action Site.
 
 You can use the following relevance to collect the MAC addresses of most systems that BigFix supports
 
@@ -62,11 +64,17 @@ You can use the following relevance to collect the MAC addresses of most systems
 Once the property is configured in BigFix, you can configure the property name when you configure the input.
 
 # BigFix Analysis Input
-The BigFix TA contains a configurable REST input for ingesting the results of a specificed analysis within BigFix. This will require the display name of the analysis being imported. Once congfigured, the results are ingested per property result per host in a single event so multiple properties within a single analysis can be identified and evaluated once the events are ingested.
+The BigFix TA contains a configurable REST input for ingesting the results of a specificed analysis within BigFix. This will require the display name of the analysis being imported. Once congfigured, the results are ingested per property result per host in a single event so multiple properties within a single analysis can be identified and evaluated once the events are ingested. This will also break multi-value results into their own events with the same property name.
+
+Some characters of an analysis' name, in their raw form, will not be allowed due to them breaking the REST query. For example, the "/" character cannot be used. If an input to ingest anaylsis results is not returning any results, try configuring non-alphanumeric charcters to their HTML encoded equivalent. For example, the "/" character's HTML encode is "%2F".
+
+This link contains a table of characters and their encodes. Use it as a reference if issues arise with a particular analysis: https://www.w3schools.com/tags/ref_urlencode.asp
+
+Another consideration when configuring this input is how often the analysis property is updated. If any analysis property is normally only evaluated on the endpoints once a day, the interval for the ingestion of that analysis should be no less than "86400" (24 hours in seconds). Consult your BigFix administrator for evaluation times of analysis that you want to import to ensure you are querying the analysis when there is most likely to be any change in results.
 
 # Acknowledgements
 
-This section is to thank the many people who attirbuted the development of this TA by providing relevance, log files, development licenses, and other support.
+This section is to thank the many people who contributed to the development of this TA by providing relevance, log files, development licenses, larger environments, and other support.
 
 - Jason Walker
 - Geetha Alagppan
@@ -79,3 +87,5 @@ This section is to thank the many people who attirbuted the development of this 
 - Jimmy Glass
 - Keith Hutchison
 - John Talbert
+- Brian Kessler
+- LaVon Smith
