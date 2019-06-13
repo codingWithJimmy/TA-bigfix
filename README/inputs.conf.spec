@@ -11,9 +11,9 @@ global_account =
 [bigfix_users://<name>]
 global_account = 
 
-[bigfix_asset_list://<name>]
+[bigfix_infrastructure://<name>]
+global_account = 
+
+[bigfix_clients://<name>]
 global_account = 
 mac_address_property = BigFix property name that provides the MAC address for BigFix clients
-
-[bigfix_infrastructure://<name>]
-global_account =
