@@ -13,9 +13,9 @@ This app can be distributed using a deployment server but the host responsible f
 Prior to configuring the add-on, below is a list of requirements to request from the BigFix administrator
 
 1. A console account with the following capabilities:
-	-Show Other Operators' Actions
-	-Can Submit Queries
-	-Can use REST API
+-Show Other Operators' Actions
+-Can Submit Queries
+-Can use REST API
 2. The account will need to be subscribed to all sites where information is to be evaluated from.
 3. The account will need to have the proper computer assignments.
 
@@ -23,9 +23,8 @@ Prior to configuring the add-on, below is a list of requirements to request from
 The add-on has configurations included for ingesting raw BigFix component logs for some sources which are listed in the "Sourcetypes" section. The configurations can be found in the "inputs.template" file in the default directory of the add-on. Tailor the app for each BigFix component accordingly. Consult the BigFix administrator for where logs will exist and deploy the configurations accordingly.
 
 Configure the account and server information for the BigFix deployment by doing the following:
-	- Click "Configuration" and add the account username and password provided by the BigFix administrator.
-	- Click the "Add-on Settings" tab and fill in the URL to the BigFix server as well as the port configured for BigFix traffic. The default port is 52311 and is filled in already. Consult your BigFix administrator and ensure this is the proper port.
-	- Click the "Inputs" tab and click the "Create New Input" dropdown to configure the modular REST API inputs.
+- Click "Configuration" and add the account username and password provided by the BigFix administrator.	- Click the "Add-on Settings" tab and fill in the URL to the BigFix server as well as the port configured for BigFix traffic. The default port is 52311 and is filled in already. Consult your BigFix administrator and ensure this is the proper port.
+- Click the "Inputs" tab and click the "Create New Input" dropdown to configure the modular REST API inputs.
 
 # Sourcetypes
 The BigFix TA uses the following sourcetype format along with the log they currently support:
