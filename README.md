@@ -13,9 +13,9 @@ This app can be distributed using a deployment server but the host responsible f
 Prior to configuring the add-on, below is a list of requirements to request from the BigFix administrator
 
 1. A console account with the following capabilities:
--Show Other Operators' Actions
--Can Submit Queries
--Can use REST API
+- Show Other Operators' Actions
+- Can Submit Queries
+- Can use REST API
 2. The account will need to be subscribed to all sites where information is to be evaluated from.
 3. The account will need to have the proper computer assignments.
 
@@ -56,9 +56,9 @@ bigfix:fixlets | BigFix relevant fixlet export using REST
 The BigFix TA contains a configurable REST input for collecting client information from a BigFix deployment. The REST query should return results, even from environments with a large number of clients, in a reasonable amount of time. This requires the coordination with the administrator of BigFix because the field containing the MAC address is not a default property inside of an out-of-the-box BigFix deployment.
 
 Some notes on further requirements for this input:
-	- A property the BigFix administrator knows will need to be identified which details a list of MAC addresses for each host. This property will need to be configured with the input. If there is a not a currently configured property, the BigFix administrator may use the relevance below to evaluate the property.
-	- The account used to perform the query will need permission to, at least, read the site that contains the property for the MAC address if it's not contained within the Master Action Site.
-	- The query relies on results from analysis within the "BES Support" site. The user account will need to be assigned to the site to view those results.
+- A property the BigFix administrator knows will need to be identified which details a list of MAC addresses for each host. This property will need to be configured with the input. If there is a not a currently configured property, the BigFix administrator may use the relevance below to evaluate the property.
+- The account used to perform the query will need permission to, at least, read the site that contains the property for the MAC address if it's not contained within the Master Action Site.
+- The query relies on results from analysis within the "BES Support" site. The user account will need to be assigned to the site to view those results.
 
 If the MAC addresses of the clients are not being evaluated, you can use the following relevance to collect the MAC addresses of most systems that BigFix supports
 
