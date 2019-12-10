@@ -1,8 +1,6 @@
 {
-    "global_settings": {
-        "logging": {
-            "level": "{{__settings__.logging.loglevel}}"
-        }
+    "meta": {
+        "apiVersion": "1.0.0"
     }, 
     "tokens": [
         "__settings__.logging.loglevel", 
@@ -14,7 +12,12 @@
     ], 
     "requests": [
         {
+            "pre_process": {
+                "skip_conditions": [], 
+                "pipeline": []
+            }, 
             "request": {
+                "url": "{{__settings__.additional_parameters.bigfix_server_url}}:{{__settings__.additional_parameters.bigfix_server_port}}/api/query?output=json&relevance=(\"analysis_name=\" %26 item 1 of it, \"property_name=\" %26 item 1 of item 0 of it,\"property_value=\" %26 item 0 of item 0 of item 0 of it, \"nt_host=\" %26 item 1 of item 0 of item 0 of it) of ((((values of it , name of computer of it) of results of it , names of it) of properties of it) of it , names of it) of bes analysis whose (name of it is \"{{analysis_name}}\")", 
                 "method": "GET", 
                 "auth": {
                     "type": "basic_auth", 
@@ -23,12 +26,7 @@
                         "password": "{{global_account.password}}"
                     }
                 }, 
-                "url": "{{__settings__.additional_parameters.bigfix_server_url}}:{{__settings__.additional_parameters.bigfix_server_port}}/api/query?output=json&relevance=%28%22analysis_name%3D%22+%26+item+1+of+it%2C+%22property_name%3D%22+%26+item+1+of+item+0+of+it%2C%22property_value%3D%22+%26+item+0+of+item+0+of+item+0+of+it%2C+%22nt_host%3D%22+%26+item+1+of+item+0+of+item+0+of+it%29+of+%28%28%28%28values+of+it+%2C+name+of+computer+of+it%29+of+results+of+it+%2C+names+of+it%29+of+properties+of+it%29+of+it+%2C+names+of+it%29+of+bes+analysis+whose+%28name+of+it+is+%22{{analysis_name}}%22%29", 
                 "headers": {}
-            }, 
-            "pre_process": {
-                "skip_conditions": [], 
-                "pipeline": []
             }, 
             "iteration_mode": {
                 "stop_conditions": [
@@ -36,7 +34,7 @@
                         "method": "json_empty", 
                         "input": [
                             "{{__response__.body}}", 
-                            "$.result"
+                            "$.$.result[*]"
                         ]
                     }
                 ], 
@@ -48,20 +46,21 @@
                         "method": "json_empty", 
                         "input": [
                             "{{__response__.body}}", 
-                            "$.result"
+                            "$.$.result[*]"
                         ]
                     }
                 ], 
                 "pipeline": [
                     {
+                        "output": "__stdout__", 
                         "method": "json_path", 
                         "input": [
                             "{{__response__.body}}", 
-                            "$.result"
-                        ], 
-                        "output": "__stdout__"
+                            "$.$.result[*]"
+                        ]
                     }, 
                     {
+                        "output": "__stdout__", 
                         "method": "splunk_xml", 
                         "input": [
                             "{{__stdout__}}", 
@@ -70,8 +69,7 @@
                             "{{host}}", 
                             "{{source}}", 
                             "{{sourcetype}}"
-                        ], 
-                        "output": "__stdout__"
+                        ]
                     }, 
                     {
                         "method": "std_output", 
@@ -83,7 +81,9 @@
             }
         }
     ], 
-    "meta": {
-        "apiVersion": "1.0.0"
+    "global_settings": {
+        "logging": {
+            "level": "{{__settings__.logging.loglevel}}"
+        }
     }
 }

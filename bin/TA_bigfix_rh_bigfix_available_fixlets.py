@@ -40,16 +40,6 @@ fields = [
         default=None,
         validator=None
     ), 
-    field.RestField(
-        'site_name',
-        required=True,
-        encrypted=False,
-        default=None,
-        validator=validator.String(
-            min_len=0, 
-            max_len=8192, 
-        )
-    ), 
 
     field.RestField(
         'disabled',
@@ -63,7 +53,7 @@ model = RestModel(fields, name=None)
 
 
 endpoint = DataInputModel(
-    'bigfix_relevant_fixlets',
+    'bigfix_available_fixlets',
     model,
 )
 
