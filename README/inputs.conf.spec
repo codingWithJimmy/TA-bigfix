@@ -5,10 +5,6 @@ global_account =
 global_account = 
 analysis_name = 
 
-[bigfix_clients://<name>]
-global_account = 
-mac_address_property = BigFix property name that provides the MAC address for BigFix clients
-
 [bigfix_available_fixlets://<name>]
 global_account = 
 
@@ -20,4 +16,8 @@ site_name = Display name of the site
 global_account = 
 
 [bigfix_users://<name>]
-global_account =
+global_account = 
+
+[bigfix_clients://<name>]
+global_account = 
+mac_address_property = BigFix property name that provides the MAC address for BigFix clients
