@@ -6,9 +6,9 @@ The BigFix TA should be installed on:
 
 - Search Heads - The add-on contains field extractions for flat logs as well as formatting for the REST input for assets
 - Indexers - The add-on contains props.conf and transforms.conf configurations for properly ingesting logs for BigFix clients, relays, and server logs. NOTE: Not all available BigFix logs have been added to the TA. As development progresses, more logs will be added to the add-on for proper ingestion.
-- Heavy Forwarder - The REST input should be configured on a heavy forwarder to ensure uninterrupted inputs from the BigFix deployment
+- Heavy Forwarder - The modular inputs should be configured on a heavy forwarder to ensure uninterrupted inputs from the BigFix deployment
 
-This app can be distributed using a deployment server but the host responsible for performing REST API queries should have the app installed ad-hoc and to ensure the configurations are not replaced by the deployment server.
+This app can be distributed using a deployment server but the host responsible for performing modular input queries should have the app installed ad-hoc and to ensure the configurations are not replaced by the deployment server.
 
 Prior to configuring the add-on, below is a list of requirements to request from the BigFix administrator
 
@@ -44,13 +44,19 @@ bigfix:ape:notifier:monitor:log | BigFix Server Automation Notification Service 
 bigfix:ape:notifier:service:log | BigFix Server Automation Notification Service status 
 bigfix:ape:plan:engine:log | BigFix Server Automation Plan Engine 
 bigfix:compliance:import:log | BigFix Compliance Import Log 
-bigfix:clients | BigFix client list export using REST (Requires "BES Component Versions" analysis of "BES Support" site to be activated)
-bigfix:action | BigFix action status export using REST
-bigfix:analysis | BigFix analysis result export using REST
-bigfix:users | BigFix user list export using REST
-bigfix:infrastructure | BigFix infrastructure export using REST (Requires "BES Health Checks" analysis of "BES Support" site to be activated)
-bigfix:fixlets | BigFix relevant fixlet export using REST
 
+ Modular Inputs | Sourcetype | BigFix Component
+--- | --- | --- 
+BigFix Clients | bigfix:clients | BigFix client list export using REST (Requires "BES Component Versions" analysis of "BES Support" site to be activated)
+BigFix Actions | bigfix:action | BigFix action status export using REST
+BigFix Analysis | bigfix:analysis | BigFix analysis result export using REST
+BigFix Users | bigfix:users | BigFix user list export using REST
+BigFix Infrastructure | bigfix:infrastructure | BigFix infrastructure export using REST (Requires "BES Health Checks" analysis of "BES Support" site to be activated)
+BigFix Available Fixlets | bigfix:fixlets:available | BigFix available fixlet export using REST
+BigFix Relevant Fixlets | bigfix:fixlets:relevant | BigFix relevant fixlet export using REST
+
+# BigFix Inputs Using Batching
+The improve the scalability of the BigFix TA, the inputs have been rewritten to allow for batch-adding the data. This is done by looping through based on modulation of a specific integer of the results of the relevance query. It basically increments and brings in different results based on however many batches you're looking to run the ingestion on.
 
 # BigFix Clients Input
 The BigFix TA contains a configurable REST input for collecting client information from a BigFix deployment. The REST query should return results, even from environments with a large number of clients, in a reasonable amount of time. This requires the coordination with the administrator of BigFix because the field containing the MAC address is not a default property inside of an out-of-the-box BigFix deployment.

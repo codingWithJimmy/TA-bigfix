@@ -1,7 +1,7 @@
 <form theme="light">
   <label>Assets</label>
   <description>Use this dashboard to create a working asset list for Splunk Enterprise Security.</description>
-  <fieldset submitButton="false">
+  <fieldset submitButton="true" autoRun="false">
     <input type="link" token="mvadds" searchWhenChanged="true">
       <label>Multi-Value Addresses</label>
       <choice value="all">All Multi-Values</choice>
@@ -26,13 +26,22 @@
         </condition>
       </change>
     </input>
+    <input type="text" token="indexes" searchWhenChanged="true">
+      <label>Index Definition</label>
+      <default>index=bigfix</default>
+      <prefix>(</prefix>
+      <suffix>)</suffix>
+      <initialValue>index=bigfix</initialValue>
+    </input>
   </fieldset>
   <row>
     <panel depends="$allMV$">
       <table>
         <title>Splunk Enterprise Security Asset List (All Multi-Values)</title>
         <search>
-          <query>`bigfix_index` (sourcetype=bigfix:asset:list OR sourcetype=bigfix:clients) | dedup nt_host | table ip mac nt_host dns owner priority lat log city country bunit category pci_domain is_expected should_timesync should_update</query>
+          <query>$indexes$ (sourcetype=bigfix:asset:list OR sourcetype=bigfix:clients)
+| stats latest(ip) as ip latest(mac) as mac latest(nt_host) as nt_host latest(dns) as dns latest(owner) as owner latest(priority) as priority latest(lat) as lat latest(long) as long latest(city) as city latest(country) as country latest(bunit) as bunit latest(category) as category latest(pci_domain) as pci_domain latest(is_expected) as is_expected latest(should_timesync) as should_timesync latest(should_update) as should_update by client_id 
+| fields - client_id</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
         </search>
@@ -50,7 +59,10 @@
       <table>
         <title>Splunk Enterprise Security Asset List  (Multi-Value IP)</title>
         <search>
-          <query>`bigfix_index` (sourcetype=bigfix:asset:list OR sourcetype=bigfix:clients) | dedup nt_host | rex "mac\=(?&lt;mac_single&gt;[^\|\"]+)" | table ip mac_single nt_host dns owner priority lat log city country bunit category pci_domain is_expected should_timesync should_update | rename mac_single AS mac</query>
+          <query>$indexes$ (sourcetype=bigfix:asset:list OR sourcetype=bigfix:clients) 
+| rex "mac\": \"(?&lt;mac_single&gt;[^\|\"]+)" 
+| stats latest(ip) as ip latest(mac_single) as mac latest(nt_host) as nt_host latest(dns) as dns latest(owner) as owner latest(priority) as priority latest(lat) as lat latest(long) as long latest(city) as city latest(country) as country latest(bunit) as bunit latest(category) as category latest(pci_domain) as pci_domain latest(is_expected) as is_expected latest(should_timesync) as should_timesync latest(should_update) as should_update by client_id 
+| fields - client_id</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
         </search>
@@ -68,7 +80,10 @@
       <table>
         <title>Splunk Enterprise Security Asset List  (Multi-Value MAC)</title>
         <search>
-          <query>`bigfix_index` (sourcetype=bigfix:asset:list OR sourcetype=bigfix:clients) | dedup nt_host | rex "ip\=(?&lt;ip_single&gt;[^\|\"]+)" | table ip_single mac nt_host dns owner priority lat log city country bunit category pci_domain is_expected should_timesync should_update | rename ip_single AS ip</query>
+          <query>$indexes$ (sourcetype=bigfix:asset:list OR sourcetype=bigfix:clients) 
+| rex "ip\"\: \"(?&lt;ip_single&gt;[^\|\"]+)" 
+| stats latest(ip_single) as ip latest(mac) as mac latest(nt_host) as nt_host latest(dns) as dns latest(owner) as owner latest(priority) as priority latest(lat) as lat latest(long) as long latest(city) as city latest(country) as country latest(bunit) as bunit latest(category) as category latest(pci_domain) as pci_domain latest(is_expected) as is_expected latest(should_timesync) as should_timesync latest(should_update) as should_update by client_id 
+| fields - client_id</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
         </search>
