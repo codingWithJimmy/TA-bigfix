@@ -28,22 +28,22 @@ model_logging = RestModel(fields_logging, name='logging')
 fields_additional_parameters = [
     field.RestField(
         'bigfix_server_url',
-        required=False,
+        required=True,
         encrypted=False,
         default='',
         validator=validator.String(
-            max_len=8192, 
             min_len=0, 
+            max_len=8192, 
         )
     ), 
     field.RestField(
         'bigfix_server_port',
-        required=False,
+        required=True,
         encrypted=False,
         default='52311',
         validator=validator.String(
-            max_len=8192, 
             min_len=0, 
+            max_len=8192, 
         )
     )
 ]

@@ -29,8 +29,8 @@ fields = [
         encrypted=False,
         default='default',
         validator=validator.String(
-            max_len=80, 
             min_len=1, 
+            max_len=80, 
         )
     ), 
     field.RestField(
@@ -46,8 +46,18 @@ fields = [
         encrypted=False,
         default=None,
         validator=validator.String(
-            max_len=8192, 
             min_len=0, 
+            max_len=8192, 
+        )
+    ), 
+    field.RestField(
+        'set_batch_value',
+        required=True,
+        encrypted=False,
+        default='10',
+        validator=validator.String(
+            min_len=0, 
+            max_len=8192, 
         )
     ), 
 

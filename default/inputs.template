@@ -72,4 +72,3 @@ disabled = 1
 whitelist = (MFS\.|ns\-apps\.|ns\-monitor\-app\.|ns\-notifier\-app\.|pe_console\.)
 disabled = 1
 
-
