@@ -1,6 +1,9 @@
 # BigFix TA
 The BigFix TA can be used to configure Splunk to ingest BigFix client, relay, and server logs. It also contains multiple modular inputs to query the REST API of a BigFix core server.
 
+# Compatability
+The BigFix TA was developed and tested using **Splunk Enterprise 7.3.x** using the **Splunk Add-on Builder 2.2.0**. It is currently still using Python 2.7 for the modular inputs so they may **not** fully work on **Splunk Enterprise 8.0+**. I recommend installing the add-on to collect modular inputs on **Splunk Enterprise 7.x**.
+
 # Installation
 The BigFix TA should be installed on:
 
