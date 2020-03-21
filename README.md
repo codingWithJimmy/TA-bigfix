@@ -78,9 +78,7 @@ Once the property is configured in BigFix, you can configure the property name w
 # BigFix Analysis Input
 The BigFix TA contains a configurable REST input for ingesting the results of a specificed analysis within BigFix. This will require the display name of the analysis being imported. Once congfigured, the results are ingested per property result per host in a single event so multiple properties within a single analysis can be identified and evaluated once the events are ingested. This will also break multi-value results into their own events with the same property name.
 
-Some characters of an analysis' name, in their raw form, will not be allowed due to them breaking the REST query. For example, the "/" character cannot be used. If an input to ingest anaylsis results is not returning any results, try configuring non-alphanumeric charcters to their HTML encoded equivalent. For example, the "/" character's HTML encode is "%2F".
-
-This link contains a table of characters and their encodes. Use it as a reference if issues arise with a particular analysis: https://www.w3schools.com/tags/ref_urlencode.asp
+To configure a specific analysis for ingestion, your BigFix administrator will need to provide the integer ID of the analysis as well as the site that analysis exists under. Once you configure those values, your analysis will be ingested.
 
 Another consideration when configuring this input is how often the analysis property is updated. If any analysis property is normally only evaluated on the endpoints once a day, the interval for the ingestion of that analysis should be no less than "86400" (24 hours in seconds). Consult your BigFix administrator for evaluation times of analysis that you want to import to ensure your ingestion interval is as long or longer than the analysis interval.
 
