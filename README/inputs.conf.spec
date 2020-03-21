@@ -1,17 +1,6 @@
 [bigfix_actions://<name>]
 global_account = 
 
-[bigfix_analysis://<name>]
-global_account = 
-analysis_id = ID of the analysis
-site_name = Name of the site where the analysis is configured
-set_batch_value = 
-
-[bigfix_clients://<name>]
-global_account = 
-mac_address_property = 
-set_batch_value = Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.
-
 [bigfix_available_fixlets://<name>]
 global_account = 
 
@@ -23,4 +12,15 @@ set_batch_value = Number of batches to use for ingestion. NOTE: This number shou
 global_account = 
 
 [bigfix_users://<name>]
-global_account =
+global_account = 
+
+[bigfix_analysis://<name>]
+global_account = 
+analysis_id = ID of the analysis
+site_name = Name of the site where the analysis is configured
+set_batch_value = Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.
+
+[bigfix_clients://<name>]
+global_account = 
+mac_address_property = 
+set_batch_value = Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.

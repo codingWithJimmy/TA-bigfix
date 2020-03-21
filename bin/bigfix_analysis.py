@@ -59,8 +59,8 @@ class ModInputbigfix_analysis(modinput_wrapper.base_modinput.BaseModInput):
                                          required_on_create=True,
                                          required_on_edit=False))
         scheme.add_argument(smi.Argument("set_batch_value", title="Set Batch Value",
-                                         description="",
-                                         required_on_create=False,
+                                         description="Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.",
+                                         required_on_create=True,
                                          required_on_edit=False))
         return scheme
 
