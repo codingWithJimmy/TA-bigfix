@@ -18,6 +18,7 @@ def collect_events(helper, ew):
     opt_root_url = helper.get_global_setting('bigfix_server_url')
     sourcee= helper.get_input_stanza_names()
     opt_rest_api_port = helper.get_global_setting('bigfix_server_port')
+    opt_site_name = helper.get_arg('site_name')
     opt_sets = helper.get_arg('set_batch_value')
     int_sets = int(opt_sets)
     key=sourcee
@@ -36,7 +37,7 @@ def collect_events(helper, ew):
 
     opt_url_start=opt_root_url + ":" + opt_rest_api_port + "/api/query?output=json&relevance="
 
-    query='(%22client_id%3D%22+%26+item+0+of+it+as+string%2C+%22fixlet_id%3D%22+%26+item+0+of+item+2+of+it+as+string%2C+%22site_name%3D%22+%26+item+1+of+item+2+of+it+as+string%2C+%22last_report_time%3D%22+%26+item+1+of+it%2C+%22fixlet_type%3D%22+%26+item+2+of+item+2+of+it)+of+(id+of+it%2C+last+report+time+of+it+as+string%2C+(id+of+it%2C+name+of+site+of+it%2C+type+of+it)+of+relevant+fixlets+of+it)+of+bes+computers+whose+((id+of+it+mod+SETS+%3D+RESULT)+AND+(last+report+time+of+it+%3E%3D+%22CHECKPOINT%22+as+time))'.replace("SETS", opt_sets).replace("CHECKPOINT", check)
+    query='%28%22client_id%3D%22+%26+item+0+of+it+as+string%2C+%22fixlet_id%3D%22+%26+item+0+of+item+2+of+it+as+string%2C+%22site_name%3D%22+%26+item+1+of+item+2+of+it+as+string%2C+%22last_report_time%3D%22+%26+item+1+of+it%2C+%22fixlet_type%3D%22+%26+item+2+of+item+2+of+it%29+of+%28id+of+it%2C+last+report+time+of+it+as+string%2C+%28id+of+it%2C+name+of+site+of+it%2C+type+of+it%29+of+relevant+fixlets+whose+%28name+of+site+of+it+%3D+%22SITENAME%22%29+of+it%29+of+bes+computers+whose+%28%28id+of+it+mod+SETS+%3D+RESULT%29+AND+%28last+report+time+of+it+%3E%3D+%22CHECKPOINT%22+as+time%29%29'.replace("SETS", opt_sets).replace("CHECKPOINT", check).replace("SITENAME", opt_site_name)
     
     urlb=opt_url_start + query
 
