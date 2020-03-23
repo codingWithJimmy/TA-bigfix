@@ -61,6 +61,10 @@ BigFix Relevant Fixlets | bigfix:fixlets:relevant | BigFix relevant fixlet expor
 # BigFix Inputs Using Batching
 The improve the scalability of the BigFix TA, the inputs have been rewritten to allow for batch-adding the data. This is done by looping through based on modulation of a specific integer of the results of the relevance query. It basically increments and brings in different results based on however many batches you're looking to run the ingestion on.
 
+The right modulous depends on the size of the environment. Lower client counts means less cardinality of events where you are less likely to have over 100,000 results for a single query using the inputs. As the number of results begins to exponentially grow, your modulous should grow as well. I would recommend that for every 10,000 potential results you have, you increase your modulous by 10.
+
+This means if you are collecting BigFix Action results and an action has gone out to 10,000 machines, your modulous input should use be a batch of **10**. Feel free to experiment and I encourage anyone who knows maths way better than me to report back with what would be a good number.
+
 # BigFix Clients Input
 The BigFix TA contains a configurable REST input for collecting client information from a BigFix deployment. The REST query should return results, even from environments with a large number of clients, in a reasonable amount of time. This requires the coordination with the administrator of BigFix because the field containing the MAC address is not a default property inside of an out-of-the-box BigFix deployment.
 
