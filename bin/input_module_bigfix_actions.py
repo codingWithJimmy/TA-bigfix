@@ -18,6 +18,7 @@ def collect_events(helper, ew):
     opt_root_url = helper.get_global_setting('bigfix_server_url')
     sourcee= helper.get_input_stanza_names()
     opt_rest_api_port = helper.get_global_setting('bigfix_server_port')
+    opt_global_timeout = helper.get_global_setting('query_timeout_seconds')
     opt_mac = helper.get_arg('mac_address_property')
     opt_sets = helper.get_arg('set_batch_value')
     int_sets = int(opt_sets)
@@ -40,7 +41,7 @@ def collect_events(helper, ew):
         url=urlb.replace("RESULT", strx)
         for y in range(0, 100):
             try:
-                response = helper.send_http_request(url, 'GET', parameters=None, payload=None, headers=headers, cookies=None, verify=False, cert=None, timeout=60, use_proxy=False)
+                response = helper.send_http_request(url, 'GET', parameters=None, payload=None, headers=headers, cookies=None, verify=False, cert=None, timeout=int(opt_global_timeout), use_proxy=False)
             except Exception, e:
                 helper.log_error("job="+sourcee+" Error Response for loop="+str(x)+" error="+str(e))
                 if y == 99:

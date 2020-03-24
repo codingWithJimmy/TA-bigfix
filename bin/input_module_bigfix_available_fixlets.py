@@ -34,6 +34,7 @@ def collect_events(helper, ew):
     sourcee= helper.get_input_stanza_names()
     opt_rest_api_port = helper.get_global_setting('bigfix_server_port')
     opt_global_account = helper.get_arg('global_account')
+    opt_global_timeout = helper.get_global_setting('query_timeout_seconds')
     opt_sets = "10"#helper.get_arg('sets')
     int_sets = int(opt_sets)
     TAG_RE = re.compile(r'<[^>]+>')
@@ -73,7 +74,7 @@ def collect_events(helper, ew):
         url=urlb.replace("RESULT", strx)
         for y in range(0, 100):
             try:
-                response = helper.send_http_request(url, 'GET', parameters=None, payload=None, headers=headers, cookies=None, verify=False, cert=None, timeout=60, use_proxy=False)
+                response = helper.send_http_request(url, 'GET', parameters=None, payload=None, headers=headers, cookies=None, verify=False, cert=None, timeout=int(opt_global_timeout), use_proxy=False)
                  #response.raise_for_status()
             except Exception, e:
                 #response.raise_for_status()
