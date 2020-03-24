@@ -50,6 +50,10 @@ class ModInputbigfix_available_fixlets(modinput_wrapper.base_modinput.BaseModInp
                                          description="",
                                          required_on_create=True,
                                          required_on_edit=False))
+        scheme.add_argument(smi.Argument("set_batch_value", title="Set Batch Value",
+                                         description="Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.",
+                                         required_on_create=True,
+                                         required_on_edit=False))
         return scheme
 
     def get_app_name(self):

@@ -35,7 +35,7 @@ def collect_events(helper, ew):
     opt_rest_api_port = helper.get_global_setting('bigfix_server_port')
     opt_global_account = helper.get_arg('global_account')
     opt_global_timeout = helper.get_global_setting('query_timeout_seconds')
-    opt_sets = "10"#helper.get_arg('sets')
+    opt_sets = helper.get_arg('set_batch_value')
     int_sets = int(opt_sets)
     TAG_RE = re.compile(r'<[^>]+>')
     #key=sourcee

@@ -15,6 +15,7 @@ set_batch_value = Number of batches to use for ingestion. NOTE: This number shou
 
 [bigfix_available_fixlets://<name>]
 global_account = 
+set_batch_value = Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.
 
 [bigfix_relevant_fixlets://<name>]
 global_account = 
