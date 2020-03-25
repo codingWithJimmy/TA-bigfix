@@ -54,6 +54,14 @@ class ModInputbigfix_available_fixlets(modinput_wrapper.base_modinput.BaseModInp
                                          description="Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.",
                                          required_on_create=True,
                                          required_on_edit=False))
+        scheme.add_argument(smi.Argument("site_name", title="Site Name",
+                                         description="Name of the site to collect from",
+                                         required_on_create=True,
+                                         required_on_edit=False))
+        scheme.add_argument(smi.Argument("fixlet_types", title="Fixlet Types",
+                                         description="Select which types of fixlets to ingest.",
+                                         required_on_create=True,
+                                         required_on_edit=False))
         return scheme
 
     def get_app_name(self):

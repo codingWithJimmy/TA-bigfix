@@ -37,6 +37,9 @@ def collect_events(helper, ew):
     opt_global_timeout = helper.get_global_setting('query_timeout_seconds')
     int_global_timeout = int(opt_global_timeout)
     opt_sets = helper.get_arg('set_batch_value')
+    opt_site_name = helper.get_arg('site_name')
+    opt_fixlet_types = helper.get_arg('fixlet_types')
+    str_fixlet_types = str(opt_fixlet_types).replace(",","").replace("\'","").replace("[u","type of it is \"").replace("]","\"").replace(" u","\" OR type of it is \"")
     int_sets = int(opt_sets)
     TAG_RE = re.compile(r'<[^>]+>')
     #key=sourcee
@@ -60,7 +63,7 @@ def collect_events(helper, ew):
     opt_url_start=opt_root_url + ":" + opt_rest_api_port + "/api/query?output=json&relevance="
 
     
-    query='%28%22fixlet_id%3D%22+%26+item+0+of+it%2C+%22fixlet_name%3D%22+%26+item+1+of+it%2C+%22fixlet_severity%3D%22+%26+item+2+of+it%2C+%22fixlet_source%3D%22+%26+item+7+of+it%2C+%22fixlet_type%3D%22+%26+item+8+of+it+as+string%2C+%22site_name%3D%22+%26+item+3+of+it%2C+%22source_category%3D%22+%26+item+4+of+it%2C+%22source_release_date%3D%22+%26+item+5+of+it%2C+%22source_id%3D%22+%26+item+6+of+it%29+of+%28item+0+of+it+as+string%2C+item+1+of+it+as+string%2C+item+2+of+it+as+string%2C+item+3+of+it+as+string%2C+item+4+of+it+as+string%2C+item+5+of+it+as+string%2C+item+6+of+it+as+string%2C+item+7+of+it+as+string%2C+item+8+of+it+as+string%29+of+%28id+of+it%2C+name+of+it%2C+%28if+exists+source+severity+of+it+then+source+severity+of+it+else+%22N%252FA%22%29%2C+name+of+site+of+it%2C+%28if+exists+category+of+it+then+category+of+it+else+%22N%252FA%22%29%2C+%28if+exists+source+release+date+of+it+then+source+release+date+of+it+as+string+else+%22N%252FA%22%29%2C+%28if+exists+source+id+of+it+then+source+id+of+it+as+string+else+%22N%252FA%22%29%2C+%28if+exists+source+of+it+then+source+of+it+else+%22N%252FA%22%29%2Ctype+of+it%29+of+fixlets+whose+%28id+of+it+mod+SETS+%3D+RESULT%29+of+all+bes+sites'.replace("SETS", opt_sets)
+    query='%28%22fixlet_id%3D%22+%26+item+0+of+it%2C+%22fixlet_name%3D%22+%26+item+1+of+it%2C+%22fixlet_severity%3D%22+%26+item+2+of+it%2C+%22fixlet_source%3D%22+%26+item+7+of+it%2C+%22fixlet_type%3D%22+%26+item+8+of+it+as+string%2C+%22site_name%3D%22+%26+item+3+of+it%2C+%22source_category%3D%22+%26+item+4+of+it%2C+%22source_release_date%3D%22+%26+item+5+of+it%2C+%22source_id%3D%22+%26+item+6+of+it%29+of+%28item+0+of+it+as+string%2C+item+1+of+it+as+string%2C+item+2+of+it+as+string%2C+item+3+of+it+as+string%2C+item+4+of+it+as+string%2C+item+5+of+it+as+string%2C+item+6+of+it+as+string%2C+item+7+of+it+as+string%2C+item+8+of+it+as+string%29+of+%28id+of+it%2C+name+of+it%2C+%28if+exists+source+severity+of+it+then+source+severity+of+it+else+%22N%252FA%22%29%2C+name+of+site+of+it%2C+%28if+exists+category+of+it+then+category+of+it+else+%22N%252FA%22%29%2C+%28if+exists+source+release+date+of+it+then+source+release+date+of+it+as+string+else+%22N%252FA%22%29%2C+%28if+exists+source+id+of+it+then+source+id+of+it+as+string+else+%22N%252FA%22%29%2C+%28if+exists+source+of+it+then+source+of+it+else+%22N%252FA%22%29%2Ctype+of+it%29+of+fixlets+whose+%28%28TYPES%29+AND+id+of+it+mod+SETS+%3D+RESULT%29+of+all+bes+sites+whose+%28name+of+it+%3D+%22SITENAME%22%29'.replace("SETS", opt_sets).replace("TYPES", str_fixlet_types).replace("SITENAME",opt_site_name)
     
     
     #("client_id=" %26 item 0 of it as string, "fixlet_id=" %26 item 0 of item 2 of it as string, "site_name=" %26 item 1 of item 2 of it as string, "last_report_time=" %26 item 1 of it) of (id of it, last report time of it as string, (id of it, name of site of it) of relevant fixlets of it) of bes computers whose ((id of it mod SETS = RESULT))'.replace("SETS", opt_sets)#.replace("CHECKPOINT", check)
