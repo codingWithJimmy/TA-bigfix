@@ -1,885 +1,928 @@
 {
     "meta": {
-        "restRoot": "TA_bigfix", 
-        "apiVersion": "3.0.0", 
-        "name": "TA-bigfix", 
         "displayName": "BigFix TA", 
-        "version": "2.0.6"
+        "restRoot": "TA_bigfix", 
+        "name": "TA-bigfix", 
+        "version": "2.0.8", 
+        "apiVersion": "3.0.0"
     }, 
     "pages": {
-        "configuration": {
-            "description": "Set up your add-on", 
-            "tabs": [
-                {
-                    "name": "account", 
-                    "title": "Account", 
-                    "table": {
-                        "actions": [
-                            "edit", 
-                            "delete", 
-                            "clone"
-                        ], 
-                        "header": [
-                            {
-                                "label": "Account name", 
-                                "field": "name"
-                            }, 
-                            {
-                                "label": "Username", 
-                                "field": "username"
-                            }
-                        ]
-                    }, 
-                    "entity": [
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of Account name should be between 1 and 50", 
-                                    "maxLength": 50
-                                }, 
-                                {
-                                    "pattern": "^[a-zA-Z]\\w*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Account name must start with a letter and followed by alphabetic letters, digits or underscores."
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Account name", 
-                            "field": "name", 
-                            "help": "Enter a unique name for this account.", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of username should be between 1 and 200", 
-                                    "maxLength": 200
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Username", 
-                            "field": "username", 
-                            "help": "Enter the username for this account.", 
-                            "required": true, 
-                            "options": {
-                                "placeholder": "Enter the username here"
-                            }
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of password should be between 1 and 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Password", 
-                            "field": "password", 
-                            "help": "Enter the password for this account.", 
-                            "required": true, 
-                            "encrypted": true
-                        }
-                    ]
-                }, 
-                {
-                    "name": "logging", 
-                    "title": "Logging", 
-                    "entity": [
-                        {
-                            "type": "singleSelect", 
-                            "label": "Log level", 
-                            "defaultValue": "INFO", 
-                            "field": "loglevel", 
-                            "options": {
-                                "disableSearch": true, 
-                                "autoCompleteFields": [
-                                    {
-                                        "value": "DEBUG", 
-                                        "label": "DEBUG"
-                                    }, 
-                                    {
-                                        "value": "INFO", 
-                                        "label": "INFO"
-                                    }, 
-                                    {
-                                        "value": "WARNING", 
-                                        "label": "WARNING"
-                                    }, 
-                                    {
-                                        "value": "ERROR", 
-                                        "label": "ERROR"
-                                    }, 
-                                    {
-                                        "value": "CRITICAL", 
-                                        "label": "CRITICAL"
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }, 
-                {
-                    "name": "additional_parameters", 
-                    "title": "Add-on Settings", 
-                    "entity": [
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "type": "string", 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "BigFix Server URL", 
-                            "field": "bigfix_server_url", 
-                            "help": "", 
-                            "defaultValue": "", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "type": "string", 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "BigFix Server Port", 
-                            "field": "bigfix_server_port", 
-                            "help": "", 
-                            "defaultValue": "52311", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "type": "string", 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Query Timeout (Seconds)", 
-                            "field": "query_timeout_seconds", 
-                            "help": "This value configures the timeout value for all queries sent to BigFix in seconds. (Default: 120)", 
-                            "defaultValue": "120", 
-                            "required": true
-                        }
-                    ]
-                }
-            ], 
-            "title": "Configuration"
-        }, 
         "inputs": {
-            "description": "Manage your data inputs", 
-            "services": [
-                {
-                    "name": "bigfix_available_fixlets", 
-                    "title": "BigFix Available Fixlets", 
-                    "entity": [
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^[a-zA-Z]\\w*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores."
-                                }, 
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of input name should be between 1 and 100", 
-                                    "maxLength": 100
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Name", 
-                            "field": "name", 
-                            "help": "Enter a unique name for the data input", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Interval must be an integer."
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Interval", 
-                            "field": "interval", 
-                            "help": "Time interval of input in seconds.", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of index name should be between 1 and 80.", 
-                                    "maxLength": 80
-                                }
-                            ], 
-                            "type": "singleSelect", 
-                            "label": "Index", 
-                            "field": "index", 
-                            "defaultValue": "default", 
-                            "required": true, 
-                            "options": {
-                                "endpointUrl": "data/indexes", 
-                                "blackList": "^_.*$", 
-                                "createSearchChoice": true
-                            }
-                        }, 
-                        {
-                            "type": "singleSelect", 
-                            "label": "Global Account", 
-                            "field": "global_account", 
-                            "help": "", 
-                            "required": true, 
-                            "options": {
-                                "referenceName": "account"
-                            }
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "type": "string", 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Set Batch Value", 
-                            "field": "set_batch_value", 
-                            "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.", 
-                            "defaultValue": "1", 
-                            "required": true
-                        }
-                    ]
-                }, 
-                {
-                    "name": "bigfix_actions", 
-                    "title": "BigFix Actions", 
-                    "entity": [
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^[a-zA-Z]\\w*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores."
-                                }, 
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of input name should be between 1 and 100", 
-                                    "maxLength": 100
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Name", 
-                            "field": "name", 
-                            "help": "Enter a unique name for the data input", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Interval must be an integer."
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Interval", 
-                            "field": "interval", 
-                            "help": "Time interval of input in seconds.", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of index name should be between 1 and 80.", 
-                                    "maxLength": 80
-                                }
-                            ], 
-                            "type": "singleSelect", 
-                            "label": "Index", 
-                            "field": "index", 
-                            "defaultValue": "default", 
-                            "required": true, 
-                            "options": {
-                                "endpointUrl": "data/indexes", 
-                                "blackList": "^_.*$", 
-                                "createSearchChoice": true
-                            }
-                        }, 
-                        {
-                            "type": "singleSelect", 
-                            "label": "Global Account", 
-                            "field": "global_account", 
-                            "help": "", 
-                            "required": true, 
-                            "options": {
-                                "referenceName": "account"
-                            }
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "type": "string", 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Set Batch Value", 
-                            "field": "set_batch_value", 
-                            "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.", 
-                            "defaultValue": "1", 
-                            "required": true
-                        }
-                    ]
-                }, 
-                {
-                    "name": "bigfix_analysis", 
-                    "title": "BigFix Analysis", 
-                    "entity": [
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^[a-zA-Z]\\w*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores."
-                                }, 
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of input name should be between 1 and 100", 
-                                    "maxLength": 100
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Name", 
-                            "field": "name", 
-                            "help": "Enter a unique name for the data input", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Interval must be an integer."
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Interval", 
-                            "field": "interval", 
-                            "help": "Time interval of input in seconds.", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of index name should be between 1 and 80.", 
-                                    "maxLength": 80
-                                }
-                            ], 
-                            "type": "singleSelect", 
-                            "label": "Index", 
-                            "field": "index", 
-                            "defaultValue": "default", 
-                            "required": true, 
-                            "options": {
-                                "endpointUrl": "data/indexes", 
-                                "blackList": "^_.*$", 
-                                "createSearchChoice": true
-                            }
-                        }, 
-                        {
-                            "type": "singleSelect", 
-                            "label": "Global Account", 
-                            "field": "global_account", 
-                            "help": "", 
-                            "required": true, 
-                            "options": {
-                                "referenceName": "account"
-                            }
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "type": "string", 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Analysis ID", 
-                            "field": "analysis_id", 
-                            "help": "ID of the analysis", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "type": "string", 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Site Name", 
-                            "field": "site_name", 
-                            "help": "Name of the site where the analysis is configured", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "type": "string", 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Set Batch Value", 
-                            "field": "set_batch_value", 
-                            "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.", 
-                            "defaultValue": "1", 
-                            "required": true
-                        }
-                    ]
-                }, 
-                {
-                    "name": "bigfix_clients", 
-                    "title": "BigFix Clients", 
-                    "entity": [
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^[a-zA-Z]\\w*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores."
-                                }, 
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of input name should be between 1 and 100", 
-                                    "maxLength": 100
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Name", 
-                            "field": "name", 
-                            "help": "Enter a unique name for the data input", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Interval must be an integer."
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Interval", 
-                            "field": "interval", 
-                            "help": "Time interval of input in seconds.", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of index name should be between 1 and 80.", 
-                                    "maxLength": 80
-                                }
-                            ], 
-                            "type": "singleSelect", 
-                            "label": "Index", 
-                            "field": "index", 
-                            "defaultValue": "default", 
-                            "required": true, 
-                            "options": {
-                                "endpointUrl": "data/indexes", 
-                                "blackList": "^_.*$", 
-                                "createSearchChoice": true
-                            }
-                        }, 
-                        {
-                            "type": "singleSelect", 
-                            "label": "Global Account", 
-                            "field": "global_account", 
-                            "help": "", 
-                            "required": true, 
-                            "options": {
-                                "referenceName": "account"
-                            }
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "type": "string", 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "MAC Address Property", 
-                            "field": "mac_address_property", 
-                            "help": "", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "type": "string", 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Set Batch Value", 
-                            "field": "set_batch_value", 
-                            "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.", 
-                            "defaultValue": "1", 
-                            "required": true
-                        }
-                    ]
-                }, 
-                {
-                    "name": "bigfix_relevant_fixlets", 
-                    "title": "BigFix Relevant Fixlets", 
-                    "entity": [
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^[a-zA-Z]\\w*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores."
-                                }, 
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of input name should be between 1 and 100", 
-                                    "maxLength": 100
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Name", 
-                            "field": "name", 
-                            "help": "Enter a unique name for the data input", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Interval must be an integer."
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Interval", 
-                            "field": "interval", 
-                            "help": "Time interval of input in seconds.", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of index name should be between 1 and 80.", 
-                                    "maxLength": 80
-                                }
-                            ], 
-                            "type": "singleSelect", 
-                            "label": "Index", 
-                            "field": "index", 
-                            "defaultValue": "default", 
-                            "required": true, 
-                            "options": {
-                                "endpointUrl": "data/indexes", 
-                                "blackList": "^_.*$", 
-                                "createSearchChoice": true
-                            }
-                        }, 
-                        {
-                            "type": "singleSelect", 
-                            "label": "Global Account", 
-                            "field": "global_account", 
-                            "help": "", 
-                            "required": true, 
-                            "options": {
-                                "referenceName": "account"
-                            }
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "type": "string", 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Site Name", 
-                            "field": "site_name", 
-                            "help": "Name of the site to extract relevant fixlets from.", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 0, 
-                                    "type": "string", 
-                                    "errorMsg": "Max length of text input is 8192", 
-                                    "maxLength": 8192
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Set Batch Value", 
-                            "field": "set_batch_value", 
-                            "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.", 
-                            "defaultValue": "1", 
-                            "required": true
-                        }
-                    ]
-                }, 
-                {
-                    "name": "bigfix_infrastructure", 
-                    "title": "BigFix Infrastructure", 
-                    "entity": [
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^[a-zA-Z]\\w*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores."
-                                }, 
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of input name should be between 1 and 100", 
-                                    "maxLength": 100
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Name", 
-                            "field": "name", 
-                            "help": "Enter a unique name for the data input", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Interval must be an integer."
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Interval", 
-                            "field": "interval", 
-                            "help": "Time interval of input in seconds.", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of index name should be between 1 and 80.", 
-                                    "maxLength": 80
-                                }
-                            ], 
-                            "type": "singleSelect", 
-                            "label": "Index", 
-                            "field": "index", 
-                            "defaultValue": "default", 
-                            "required": true, 
-                            "options": {
-                                "endpointUrl": "data/indexes", 
-                                "blackList": "^_.*$", 
-                                "createSearchChoice": true
-                            }
-                        }, 
-                        {
-                            "type": "singleSelect", 
-                            "label": "Global Account", 
-                            "field": "global_account", 
-                            "help": "", 
-                            "required": true, 
-                            "options": {
-                                "referenceName": "account"
-                            }
-                        }
-                    ]
-                }, 
-                {
-                    "name": "bigfix_users", 
-                    "title": "BigFix Users", 
-                    "entity": [
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^[a-zA-Z]\\w*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores."
-                                }, 
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of input name should be between 1 and 100", 
-                                    "maxLength": 100
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Name", 
-                            "field": "name", 
-                            "help": "Enter a unique name for the data input", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$", 
-                                    "type": "regex", 
-                                    "errorMsg": "Interval must be an integer."
-                                }
-                            ], 
-                            "type": "text", 
-                            "label": "Interval", 
-                            "field": "interval", 
-                            "help": "Time interval of input in seconds.", 
-                            "required": true
-                        }, 
-                        {
-                            "validators": [
-                                {
-                                    "minLength": 1, 
-                                    "type": "string", 
-                                    "errorMsg": "Length of index name should be between 1 and 80.", 
-                                    "maxLength": 80
-                                }
-                            ], 
-                            "type": "singleSelect", 
-                            "label": "Index", 
-                            "field": "index", 
-                            "defaultValue": "default", 
-                            "required": true, 
-                            "options": {
-                                "endpointUrl": "data/indexes", 
-                                "blackList": "^_.*$", 
-                                "createSearchChoice": true
-                            }
-                        }, 
-                        {
-                            "type": "singleSelect", 
-                            "label": "Global Account", 
-                            "field": "global_account", 
-                            "help": "", 
-                            "required": true, 
-                            "options": {
-                                "referenceName": "account"
-                            }
-                        }
-                    ]
-                }
-            ], 
-            "title": "Inputs", 
             "table": {
+                "header": [
+                    {
+                        "field": "name", 
+                        "label": "Name"
+                    }, 
+                    {
+                        "field": "interval", 
+                        "label": "Interval"
+                    }, 
+                    {
+                        "field": "index", 
+                        "label": "Index"
+                    }, 
+                    {
+                        "field": "disabled", 
+                        "label": "Status"
+                    }
+                ], 
+                "moreInfo": [
+                    {
+                        "field": "name", 
+                        "label": "Name"
+                    }, 
+                    {
+                        "field": "interval", 
+                        "label": "Interval"
+                    }, 
+                    {
+                        "field": "index", 
+                        "label": "Index"
+                    }, 
+                    {
+                        "field": "disabled", 
+                        "label": "Status"
+                    }, 
+                    {
+                        "field": "global_account", 
+                        "label": "Global Account"
+                    }, 
+                    {
+                        "field": "set_batch_value", 
+                        "label": "Set Batch Value"
+                    }, 
+                    {
+                        "field": "analysis_id", 
+                        "label": "Analysis ID"
+                    }, 
+                    {
+                        "field": "site_name", 
+                        "label": "Site Name"
+                    }, 
+                    {
+                        "field": "mac_address_property", 
+                        "label": "MAC Address Property"
+                    }, 
+                    {
+                        "field": "fixlet_types", 
+                        "label": "Fixlet Types"
+                    }
+                ], 
                 "actions": [
                     "edit", 
                     "enable", 
                     "delete", 
                     "clone"
-                ], 
-                "moreInfo": [
-                    {
-                        "label": "Name", 
-                        "field": "name"
-                    }, 
-                    {
-                        "label": "Interval", 
-                        "field": "interval"
-                    }, 
-                    {
-                        "label": "Index", 
-                        "field": "index"
-                    }, 
-                    {
-                        "label": "Status", 
-                        "field": "disabled"
-                    }, 
-                    {
-                        "label": "Global Account", 
-                        "field": "global_account"
-                    }, 
-                    {
-                        "label": "Set Batch Value", 
-                        "field": "set_batch_value"
-                    }, 
-                    {
-                        "label": "Analysis ID", 
-                        "field": "analysis_id"
-                    }, 
-                    {
-                        "label": "Site Name", 
-                        "field": "site_name"
-                    }, 
-                    {
-                        "label": "MAC Address Property", 
-                        "field": "mac_address_property"
-                    }
-                ], 
-                "header": [
-                    {
-                        "label": "Name", 
-                        "field": "name"
-                    }, 
-                    {
-                        "label": "Interval", 
-                        "field": "interval"
-                    }, 
-                    {
-                        "label": "Index", 
-                        "field": "index"
-                    }, 
-                    {
-                        "label": "Status", 
-                        "field": "disabled"
-                    }
                 ]
-            }
+            }, 
+            "title": "Inputs", 
+            "description": "Manage your data inputs", 
+            "services": [
+                {
+                    "title": "BigFix Actions", 
+                    "name": "bigfix_actions", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "help": "Enter a unique name for the data input", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "pattern": "^[a-zA-Z]\\w*$"
+                                }, 
+                                {
+                                    "errorMsg": "Length of input name should be between 1 and 100", 
+                                    "type": "string", 
+                                    "maxLength": 100, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "field": "name", 
+                            "label": "Name"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Time interval of input in seconds.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Interval must be an integer.", 
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
+                                }
+                            ], 
+                            "field": "interval", 
+                            "label": "Interval"
+                        }, 
+                        {
+                            "options": {
+                                "endpointUrl": "data/indexes", 
+                                "blackList": "^_.*$", 
+                                "createSearchChoice": true
+                            }, 
+                            "required": true, 
+                            "type": "singleSelect", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Length of index name should be between 1 and 80.", 
+                                    "type": "string", 
+                                    "maxLength": 80, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "defaultValue": "default", 
+                            "field": "index", 
+                            "label": "Index"
+                        }, 
+                        {
+                            "options": {
+                                "referenceName": "account"
+                            }, 
+                            "required": true, 
+                            "help": "", 
+                            "type": "singleSelect", 
+                            "field": "global_account", 
+                            "label": "Global Account"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "defaultValue": "1", 
+                            "field": "set_batch_value", 
+                            "label": "Set Batch Value"
+                        }
+                    ]
+                }, 
+                {
+                    "title": "BigFix Analysis", 
+                    "name": "bigfix_analysis", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "help": "Enter a unique name for the data input", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "pattern": "^[a-zA-Z]\\w*$"
+                                }, 
+                                {
+                                    "errorMsg": "Length of input name should be between 1 and 100", 
+                                    "type": "string", 
+                                    "maxLength": 100, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "field": "name", 
+                            "label": "Name"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Time interval of input in seconds.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Interval must be an integer.", 
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
+                                }
+                            ], 
+                            "field": "interval", 
+                            "label": "Interval"
+                        }, 
+                        {
+                            "options": {
+                                "endpointUrl": "data/indexes", 
+                                "blackList": "^_.*$", 
+                                "createSearchChoice": true
+                            }, 
+                            "required": true, 
+                            "type": "singleSelect", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Length of index name should be between 1 and 80.", 
+                                    "type": "string", 
+                                    "maxLength": 80, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "defaultValue": "default", 
+                            "field": "index", 
+                            "label": "Index"
+                        }, 
+                        {
+                            "options": {
+                                "referenceName": "account"
+                            }, 
+                            "required": true, 
+                            "help": "", 
+                            "type": "singleSelect", 
+                            "field": "global_account", 
+                            "label": "Global Account"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "ID of the analysis", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "field": "analysis_id", 
+                            "label": "Analysis ID"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Name of the site where the analysis is configured", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "field": "site_name", 
+                            "label": "Site Name"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "defaultValue": "1", 
+                            "field": "set_batch_value", 
+                            "label": "Set Batch Value"
+                        }
+                    ]
+                }, 
+                {
+                    "title": "BigFix Clients", 
+                    "name": "bigfix_clients", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "help": "Enter a unique name for the data input", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "pattern": "^[a-zA-Z]\\w*$"
+                                }, 
+                                {
+                                    "errorMsg": "Length of input name should be between 1 and 100", 
+                                    "type": "string", 
+                                    "maxLength": 100, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "field": "name", 
+                            "label": "Name"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Time interval of input in seconds.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Interval must be an integer.", 
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
+                                }
+                            ], 
+                            "field": "interval", 
+                            "label": "Interval"
+                        }, 
+                        {
+                            "options": {
+                                "endpointUrl": "data/indexes", 
+                                "blackList": "^_.*$", 
+                                "createSearchChoice": true
+                            }, 
+                            "required": true, 
+                            "type": "singleSelect", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Length of index name should be between 1 and 80.", 
+                                    "type": "string", 
+                                    "maxLength": 80, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "defaultValue": "default", 
+                            "field": "index", 
+                            "label": "Index"
+                        }, 
+                        {
+                            "options": {
+                                "referenceName": "account"
+                            }, 
+                            "required": true, 
+                            "help": "", 
+                            "type": "singleSelect", 
+                            "field": "global_account", 
+                            "label": "Global Account"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "field": "mac_address_property", 
+                            "label": "MAC Address Property"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "defaultValue": "1", 
+                            "field": "set_batch_value", 
+                            "label": "Set Batch Value"
+                        }
+                    ]
+                }, 
+                {
+                    "title": "BigFix Relevant Fixlets", 
+                    "name": "bigfix_relevant_fixlets", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "help": "Enter a unique name for the data input", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "pattern": "^[a-zA-Z]\\w*$"
+                                }, 
+                                {
+                                    "errorMsg": "Length of input name should be between 1 and 100", 
+                                    "type": "string", 
+                                    "maxLength": 100, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "field": "name", 
+                            "label": "Name"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Time interval of input in seconds.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Interval must be an integer.", 
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
+                                }
+                            ], 
+                            "field": "interval", 
+                            "label": "Interval"
+                        }, 
+                        {
+                            "options": {
+                                "endpointUrl": "data/indexes", 
+                                "blackList": "^_.*$", 
+                                "createSearchChoice": true
+                            }, 
+                            "required": true, 
+                            "type": "singleSelect", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Length of index name should be between 1 and 80.", 
+                                    "type": "string", 
+                                    "maxLength": 80, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "defaultValue": "default", 
+                            "field": "index", 
+                            "label": "Index"
+                        }, 
+                        {
+                            "options": {
+                                "referenceName": "account"
+                            }, 
+                            "required": true, 
+                            "help": "", 
+                            "type": "singleSelect", 
+                            "field": "global_account", 
+                            "label": "Global Account"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Name of the site to extract relevant fixlets from.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "field": "site_name", 
+                            "label": "Site Name"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "defaultValue": "1", 
+                            "field": "set_batch_value", 
+                            "label": "Set Batch Value"
+                        }
+                    ]
+                }, 
+                {
+                    "title": "BigFix Infrastructure", 
+                    "name": "bigfix_infrastructure", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "help": "Enter a unique name for the data input", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "pattern": "^[a-zA-Z]\\w*$"
+                                }, 
+                                {
+                                    "errorMsg": "Length of input name should be between 1 and 100", 
+                                    "type": "string", 
+                                    "maxLength": 100, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "field": "name", 
+                            "label": "Name"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Time interval of input in seconds.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Interval must be an integer.", 
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
+                                }
+                            ], 
+                            "field": "interval", 
+                            "label": "Interval"
+                        }, 
+                        {
+                            "options": {
+                                "endpointUrl": "data/indexes", 
+                                "blackList": "^_.*$", 
+                                "createSearchChoice": true
+                            }, 
+                            "required": true, 
+                            "type": "singleSelect", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Length of index name should be between 1 and 80.", 
+                                    "type": "string", 
+                                    "maxLength": 80, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "defaultValue": "default", 
+                            "field": "index", 
+                            "label": "Index"
+                        }, 
+                        {
+                            "options": {
+                                "referenceName": "account"
+                            }, 
+                            "required": true, 
+                            "help": "", 
+                            "type": "singleSelect", 
+                            "field": "global_account", 
+                            "label": "Global Account"
+                        }
+                    ]
+                }, 
+                {
+                    "title": "BigFix Users", 
+                    "name": "bigfix_users", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "help": "Enter a unique name for the data input", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "pattern": "^[a-zA-Z]\\w*$"
+                                }, 
+                                {
+                                    "errorMsg": "Length of input name should be between 1 and 100", 
+                                    "type": "string", 
+                                    "maxLength": 100, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "field": "name", 
+                            "label": "Name"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Time interval of input in seconds.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Interval must be an integer.", 
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
+                                }
+                            ], 
+                            "field": "interval", 
+                            "label": "Interval"
+                        }, 
+                        {
+                            "options": {
+                                "endpointUrl": "data/indexes", 
+                                "blackList": "^_.*$", 
+                                "createSearchChoice": true
+                            }, 
+                            "required": true, 
+                            "type": "singleSelect", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Length of index name should be between 1 and 80.", 
+                                    "type": "string", 
+                                    "maxLength": 80, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "defaultValue": "default", 
+                            "field": "index", 
+                            "label": "Index"
+                        }, 
+                        {
+                            "options": {
+                                "referenceName": "account"
+                            }, 
+                            "required": true, 
+                            "help": "", 
+                            "type": "singleSelect", 
+                            "field": "global_account", 
+                            "label": "Global Account"
+                        }
+                    ]
+                }, 
+                {
+                    "title": "BigFix Available Fixlets", 
+                    "name": "bigfix_available_fixlets", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "help": "Enter a unique name for the data input", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "pattern": "^[a-zA-Z]\\w*$"
+                                }, 
+                                {
+                                    "errorMsg": "Length of input name should be between 1 and 100", 
+                                    "type": "string", 
+                                    "maxLength": 100, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "field": "name", 
+                            "label": "Name"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Time interval of input in seconds.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Interval must be an integer.", 
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$"
+                                }
+                            ], 
+                            "field": "interval", 
+                            "label": "Interval"
+                        }, 
+                        {
+                            "options": {
+                                "endpointUrl": "data/indexes", 
+                                "blackList": "^_.*$", 
+                                "createSearchChoice": true
+                            }, 
+                            "required": true, 
+                            "type": "singleSelect", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Length of index name should be between 1 and 80.", 
+                                    "type": "string", 
+                                    "maxLength": 80, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "defaultValue": "default", 
+                            "field": "index", 
+                            "label": "Index"
+                        }, 
+                        {
+                            "options": {
+                                "referenceName": "account"
+                            }, 
+                            "required": true, 
+                            "help": "", 
+                            "type": "singleSelect", 
+                            "field": "global_account", 
+                            "label": "Global Account"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "defaultValue": "1", 
+                            "field": "set_batch_value", 
+                            "label": "Set Batch Value"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "Name of the site to collect from", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "field": "site_name", 
+                            "label": "Site Name"
+                        }, 
+                        {
+                            "options": {
+                                "delimiter": ",", 
+                                "items": [
+                                    {
+                                        "label": "Fixlet", 
+                                        "value": "Fixlet"
+                                    }, 
+                                    {
+                                        "label": "Task", 
+                                        "value": "Task"
+                                    }, 
+                                    {
+                                        "label": "Analysis", 
+                                        "value": "Analysis"
+                                    }
+                                ]
+                            }, 
+                            "required": true, 
+                            "help": "Select which types of fixlets to ingest.", 
+                            "type": "multipleSelect", 
+                            "field": "fixlet_types", 
+                            "label": "Fixlet Types"
+                        }
+                    ]
+                }
+            ]
+        }, 
+        "configuration": {
+            "title": "Configuration", 
+            "description": "Set up your add-on", 
+            "tabs": [
+                {
+                    "table": {
+                        "header": [
+                            {
+                                "field": "name", 
+                                "label": "Account name"
+                            }, 
+                            {
+                                "field": "username", 
+                                "label": "Username"
+                            }
+                        ], 
+                        "actions": [
+                            "edit", 
+                            "delete", 
+                            "clone"
+                        ]
+                    }, 
+                    "title": "Account", 
+                    "name": "account", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "help": "Enter a unique name for this account.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Length of Account name should be between 1 and 50", 
+                                    "type": "string", 
+                                    "maxLength": 50, 
+                                    "minLength": 1
+                                }, 
+                                {
+                                    "type": "regex", 
+                                    "errorMsg": "Account name must start with a letter and followed by alphabetic letters, digits or underscores.", 
+                                    "pattern": "^[a-zA-Z]\\w*$"
+                                }
+                            ], 
+                            "field": "name", 
+                            "label": "Account name"
+                        }, 
+                        {
+                            "options": {
+                                "placeholder": "Enter the username here"
+                            }, 
+                            "required": true, 
+                            "help": "Enter the username for this account.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Length of username should be between 1 and 200", 
+                                    "type": "string", 
+                                    "maxLength": 200, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "field": "username", 
+                            "label": "Username"
+                        }, 
+                        {
+                            "required": true, 
+                            "field": "password", 
+                            "help": "Enter the password for this account.", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Length of password should be between 1 and 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 1
+                                }
+                            ], 
+                            "encrypted": true, 
+                            "label": "Password"
+                        }
+                    ]
+                }, 
+                {
+                    "title": "Logging", 
+                    "name": "logging", 
+                    "entity": [
+                        {
+                            "options": {
+                                "disableSearch": true, 
+                                "autoCompleteFields": [
+                                    {
+                                        "label": "DEBUG", 
+                                        "value": "DEBUG"
+                                    }, 
+                                    {
+                                        "label": "INFO", 
+                                        "value": "INFO"
+                                    }, 
+                                    {
+                                        "label": "WARNING", 
+                                        "value": "WARNING"
+                                    }, 
+                                    {
+                                        "label": "ERROR", 
+                                        "value": "ERROR"
+                                    }, 
+                                    {
+                                        "label": "CRITICAL", 
+                                        "value": "CRITICAL"
+                                    }
+                                ]
+                            }, 
+                            "type": "singleSelect", 
+                            "defaultValue": "INFO", 
+                            "field": "loglevel", 
+                            "label": "Log level"
+                        }
+                    ]
+                }, 
+                {
+                    "title": "Add-on Settings", 
+                    "name": "additional_parameters", 
+                    "entity": [
+                        {
+                            "required": true, 
+                            "help": "", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "defaultValue": "", 
+                            "field": "bigfix_server_url", 
+                            "label": "BigFix Server URL"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "defaultValue": "52311", 
+                            "field": "bigfix_server_port", 
+                            "label": "BigFix Server Port"
+                        }, 
+                        {
+                            "required": true, 
+                            "help": "This value configures the timeout value for all queries sent to BigFix in seconds. (Default: 120)", 
+                            "type": "text", 
+                            "validators": [
+                                {
+                                    "errorMsg": "Max length of text input is 8192", 
+                                    "type": "string", 
+                                    "maxLength": 8192, 
+                                    "minLength": 0
+                                }
+                            ], 
+                            "defaultValue": "120", 
+                            "field": "query_timeout_seconds", 
+                            "label": "Query Timeout (Seconds)"
+                        }
+                    ]
+                }
+            ]
         }
     }
 }

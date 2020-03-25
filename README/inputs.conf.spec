@@ -1,7 +1,3 @@
-[bigfix_available_fixlets://<name>]
-global_account = 
-set_batch_value = Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.
-
 [bigfix_actions://<name>]
 global_account = 
 set_batch_value = Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.
@@ -26,4 +22,10 @@ set_batch_value = Number of batches to use for ingestion. NOTE: This number shou
 global_account = 
 
 [bigfix_users://<name>]
-global_account =
+global_account = 
+
+[bigfix_available_fixlets://<name>]
+global_account = 
+set_batch_value = Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.
+site_name = Name of the site to collect from
+fixlet_types = Select which types of fixlets to ingest.

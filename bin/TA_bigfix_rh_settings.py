@@ -32,8 +32,8 @@ fields_additional_parameters = [
         encrypted=False,
         default='',
         validator=validator.String(
-            max_len=8192, 
             min_len=0, 
+            max_len=8192, 
         )
     ), 
     field.RestField(
@@ -42,8 +42,8 @@ fields_additional_parameters = [
         encrypted=False,
         default='52311',
         validator=validator.String(
-            max_len=8192, 
             min_len=0, 
+            max_len=8192, 
         )
     ), 
     field.RestField(
@@ -52,8 +52,8 @@ fields_additional_parameters = [
         encrypted=False,
         default='120',
         validator=validator.String(
-            max_len=8192, 
             min_len=0, 
+            max_len=8192, 
         )
     )
 ]
