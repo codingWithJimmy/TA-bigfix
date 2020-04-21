@@ -15,7 +15,7 @@
       }
     ],
     "releaseDate": null,
-    "description": "",
+    "description": "Technical add-on for ingesting data from HCL BigFix into Splunk",
     "classification": {
       "intendedAudience": null,
       "categories": [],
