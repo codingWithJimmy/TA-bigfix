@@ -51,7 +51,7 @@ class ModInputbigfix_clients(modinput_wrapper.base_modinput.BaseModInput):
                                          required_on_create=True,
                                          required_on_edit=False))
         scheme.add_argument(smi.Argument("mac_address_property", title="MAC Address Property",
-                                         description="",
+                                         description="Name of property which captures the MAC address of the host. See documentation for property relevance if a property is not available.",
                                          required_on_create=True,
                                          required_on_edit=False))
         scheme.add_argument(smi.Argument("set_batch_value", title="Set Batch Value",

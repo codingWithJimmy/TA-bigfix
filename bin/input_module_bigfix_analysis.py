@@ -1,6 +1,3 @@
-
-# encoding = utf-8
-
 import os
 import sys
 import time
@@ -25,8 +22,9 @@ def collect_events(helper, ew):
     opt_sets = helper.get_arg('set_batch_value')
     int_sets = int(opt_sets)
     opt_global_account = helper.get_arg('global_account')
-    base64string = base64.encodestring('%s:%s' % (opt_global_account["username"], opt_global_account["password"])).strip()
-    headers = { 'Authorization' : 'Basic %s' % base64.b64encode(opt_global_account["username"]+":"+opt_global_account["password"]) }
+    account = opt_global_account["username"] + ":" + opt_global_account["password"]
+    base64string = base64.b64encode(account.encode()).decode()
+    headers = { 'Authorization' : 'Basic %s' % base64string }
 
     opt_url_start=opt_root_url + ":" + opt_rest_api_port + "/api/query?output=json&relevance="
 
@@ -44,7 +42,7 @@ def collect_events(helper, ew):
         for y in range(0, 100):
             try:
                 response = helper.send_http_request(url, 'GET', parameters=None, payload=None, headers=headers, cookies=None, verify=False, cert=None, timeout=int_global_timeout, use_proxy=False)
-            except Exception, e:
+            except Exception as e:
                 helper.log_error("job="+sourcee+" Error Response for loop="+str(x)+" error="+str(e))
                 if y == 99:
                     helper.log_error("job="+sourcee+" Total Failure. Exiting")

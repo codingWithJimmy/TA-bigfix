@@ -10,8 +10,6 @@ import json
 
 def validate_input(helper, definition):
     """Implement your own validation logic to validate the input stanza configurations"""
-    # This example accesses the modular input variable
-    # global_account = definition.parameters.get('global_account', None)
     pass
     
 def collect_events(helper, ew):
@@ -25,21 +23,13 @@ def collect_events(helper, ew):
     int_sets = int(opt_sets)
     key=sourcee
     opt_global_account = helper.get_arg('global_account')
-    base64string = base64.encodestring('%s:%s' % (opt_global_account["username"], opt_global_account["password"])).strip()
-    headers = { 'Authorization' : 'Basic %s' % base64.b64encode(opt_global_account["username"]+":"+opt_global_account["password"]) }
-    #check=helper.get_check_point(key) 
-    #from datetime import datetime, timedelta
-    #nextcheck=datetime.now().strftime('%a, %d %b %Y %H:%M:%S -0000')
-    #yesterday=datetime.now() - timedelta(11)
-    #yesterday=yesterday.strftime('%a, %d %b %Y %H:%M:%S -0000')
-    #if check is None:
-       # check=yesterday
-        #helper.log_info("job=\""+sourcee+"\" no checkpoint, using yesterday checkpoint=\""+check+"\"")
-    #helper.log_info("job="+sourcee+" checkpoint=\""+check+"\" nextcheckpoint=\""+nextcheck+"\"")
+    account = opt_global_account["username"] + ":" + opt_global_account["password"]
+    base64string = base64.b64encode(account.encode()).decode()
+    headers = { 'Authorization' : 'Basic %s' % base64string }
 
     opt_url_start=opt_root_url + ":" + opt_rest_api_port + "/api/query?output=json&relevance="
 
-    query='%28%22client_id%3D%22+%26+item+0+of+it+as+string%2C+%22fixlet_id%3D%22+%26+item+0+of+item+2+of+it+as+string%2C+%22site_name%3D%22+%26+item+1+of+item+2+of+it+as+string%2C+%22last_report_time%3D%22+%26+item+1+of+it%2C+%22fixlet_type%3D%22+%26+item+2+of+item+2+of+it%29+of+%28id+of+it%2C+last+report+time+of+it+as+string%2C+%28id+of+it%2C+name+of+site+of+it%2C+type+of+it%29+of+relevant+fixlets+whose+%28name+of+site+of+it+%3D+%22SITENAME%22%29+of+it%29+of+bes+computers+whose+%28id+of+it+mod+SETS+%3D+RESULT%29'.replace("SETS", opt_sets).replace("SITENAME", opt_site_name)#.replace("CHECKPOINT", check)
+    query='%28%22client_id%3D%22+%26+item+0+of+it+as+string%2C+%22fixlet_id%3D%22+%26+item+0+of+item+2+of+it+as+string%2C+%22site_name%3D%22+%26+item+1+of+item+2+of+it+as+string%2C+%22last_report_time%3D%22+%26+item+1+of+it%2C+%22fixlet_type%3D%22+%26+item+2+of+item+2+of+it%29+of+%28id+of+it%2C+last+report+time+of+it+as+string%2C+%28id+of+it%2C+name+of+site+of+it%2C+type+of+it%29+of+relevant+fixlets+whose+%28name+of+site+of+it+%3D+%22SITENAME%22%29+of+it%29+of+bes+computers+whose+%28id+of+it+mod+SETS+%3D+RESULT%29'.replace("SETS", opt_sets).replace("SITENAME", opt_site_name)
     
     urlb=opt_url_start + query
 
@@ -53,7 +43,7 @@ def collect_events(helper, ew):
         for y in range(0, 100):
             try:
                 response = helper.send_http_request(url, 'GET', parameters=None, payload=None, headers=headers, cookies=None, verify=False, cert=None, timeout=int_global_timeout, use_proxy=False)
-            except Exception, e:
+            except Exception as e:
                 helper.log_error("job="+sourcee+" Error Response for loop="+str(x)+" error="+str(e))
                 if y == 99:
                     helper.log_error("job="+sourcee+" Total Failure. Exiting")
@@ -86,7 +76,5 @@ def collect_events(helper, ew):
             event = helper.new_event(source=s, index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=j_convert)
             ew.write_event(event)
         helper.log_info("job="+sourcee+" Ending MOD loop="+str(x))
-    #helper.log_info("Writing Checkpoint checkpoint=\""+nextcheck+"\"")
-    #helper.save_check_point(key, nextcheck)
     helper.log_info("Ending job="+sourcee)
 

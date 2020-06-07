@@ -20,46 +20,46 @@ fields = [
         encrypted=False,
         default=None,
         validator=validator.Pattern(
-            regex=r"""^\-[1-9]\d*$|^\d*$""", 
+            regex=r"""^\-[1-9]\d*$|^\d*$""",
         )
-    ), 
+    ),
     field.RestField(
         'index',
         required=True,
         encrypted=False,
         default='default',
         validator=validator.String(
-            max_len=80, 
-            min_len=1, 
+            min_len=1,
+            max_len=80,
         )
-    ), 
+    ),
     field.RestField(
         'global_account',
         required=True,
         encrypted=False,
         default=None,
         validator=None
-    ), 
+    ),
     field.RestField(
         'mac_address_property',
         required=True,
         encrypted=False,
         default=None,
         validator=validator.String(
-            max_len=8192, 
-            min_len=0, 
+            min_len=0,
+            max_len=8192,
         )
-    ), 
+    ),
     field.RestField(
         'set_batch_value',
         required=True,
         encrypted=False,
         default='1',
         validator=validator.String(
-            max_len=8192, 
             min_len=0, 
+            max_len=8192,
         )
-    ), 
+    ),
 
     field.RestField(
         'disabled',
