@@ -20,53 +20,53 @@ fields = [
         encrypted=False,
         default=None,
         validator=validator.Pattern(
-            regex=r"""^\-[1-9]\d*$|^\d*$""",
+            regex=r"""^\-[1-9]\d*$|^\d*$""", 
         )
-    ),
+    ), 
     field.RestField(
         'index',
         required=True,
         encrypted=False,
         default='default',
         validator=validator.String(
-            min_len=1,
-            max_len=80,
+            min_len=1, 
+            max_len=80, 
         )
-    ),
+    ), 
     field.RestField(
         'global_account',
         required=True,
         encrypted=False,
         default=None,
         validator=None
-    ),
+    ), 
     field.RestField(
         'site_name',
         required=True,
         encrypted=False,
         default=None,
         validator=validator.String(
-            min_len=0,
-            max_len=8192,
+            min_len=0, 
+            max_len=8192, 
         )
-    ),
+    ), 
     field.RestField(
         'fixlet_types',
         required=True,
         encrypted=False,
         default=None,
         validator=None
-    ),
+    ), 
     field.RestField(
         'set_batch_value',
         required=True,
         encrypted=False,
-        default='1',
+        default=None,
         validator=validator.String(
-            min_len=0,
-            max_len=8192,
+            min_len=0, 
+            max_len=8192, 
         )
-    ),
+    ), 
 
     field.RestField(
         'disabled',

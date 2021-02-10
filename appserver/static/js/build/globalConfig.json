@@ -2,7 +2,7 @@
     "meta": {
         "name": "TA-bigfix",
         "displayName": "BigFix TA",
-        "version": "3.0.0",
+        "version": "3.0.1",
         "apiVersion": "3.0.0",
         "restRoot": "TA_bigfix"
     },
@@ -555,130 +555,6 @@
                     ]
                 },
                 {
-                    "name": "bigfix_available_fixlets",
-                    "title": "BigFix Available Fixlets",
-                    "entity": [
-                        {
-                            "field": "name",
-                            "label": "Name",
-                            "type": "text",
-                            "help": "Enter a unique name for the data input",
-                            "required": true,
-                            "validators": [
-                                {
-                                    "type": "regex",
-                                    "pattern": "^[a-zA-Z]\\w*$",
-                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores."
-                                },
-                                {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 100,
-                                    "errorMsg": "Length of input name should be between 1 and 100"
-                                }
-                            ]
-                        },
-                        {
-                            "field": "interval",
-                            "label": "Interval",
-                            "type": "text",
-                            "required": true,
-                            "help": "Time interval of input in seconds.",
-                            "validators": [
-                                {
-                                    "type": "regex",
-                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$",
-                                    "errorMsg": "Interval must be an integer."
-                                }
-                            ]
-                        },
-                        {
-                            "field": "index",
-                            "label": "Index",
-                            "type": "singleSelect",
-                            "defaultValue": "default",
-                            "options": {
-                                "endpointUrl": "data/indexes",
-                                "blackList": "^_.*$",
-                                "createSearchChoice": true
-                            },
-                            "required": true,
-                            "validators": [
-                                {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 80,
-                                    "errorMsg": "Length of index name should be between 1 and 80."
-                                }
-                            ]
-                        },
-                        {
-                            "field": "global_account",
-                            "label": "Global Account",
-                            "help": "",
-                            "required": true,
-                            "type": "singleSelect",
-                            "options": {
-                                "referenceName": "account"
-                            }
-                        },
-                        {
-                            "field": "site_name",
-                            "label": "Site Name",
-                            "help": "Name of the site to collect from",
-                            "required": true,
-                            "type": "text",
-                            "validators": [
-                                {
-                                    "type": "string",
-                                    "minLength": 0,
-                                    "maxLength": 8192,
-                                    "errorMsg": "Max length of text input is 8192"
-                                }
-                            ]
-                        },
-                        {
-                            "field": "fixlet_types",
-                            "label": "Fixlet Types",
-                            "help": "Select which types of fixlets to ingest.",
-                            "required": true,
-                            "type": "multipleSelect",
-                            "options": {
-                                "delimiter": "~",
-                                "items": [
-                                    {
-                                        "value": "Fixlet",
-                                        "label": "Fixlet"
-                                    },
-                                    {
-                                        "value": "Task",
-                                        "label": "Task"
-                                    },
-                                    {
-                                        "value": "Analysis",
-                                        "label": "Analysis"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "field": "set_batch_value",
-                            "label": "Set Batch Value",
-                            "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.",
-                            "required": true,
-                            "type": "text",
-                            "validators": [
-                                {
-                                    "type": "string",
-                                    "minLength": 0,
-                                    "maxLength": 8192,
-                                    "errorMsg": "Max length of text input is 8192"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
                     "name": "bigfix_relevant_fixlets",
                     "title": "BigFix Relevant Fixlets",
                     "entity": [
@@ -916,6 +792,130 @@
                             "options": {
                                 "referenceName": "account"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "bigfix_available_fixlets",
+                    "title": "BigFix Available Fixlets",
+                    "entity": [
+                        {
+                            "field": "name",
+                            "label": "Name",
+                            "type": "text",
+                            "help": "Enter a unique name for the data input",
+                            "required": true,
+                            "validators": [
+                                {
+                                    "type": "regex",
+                                    "pattern": "^[a-zA-Z]\\w*$",
+                                    "errorMsg": "Input Name must start with a letter and followed by alphabetic letters, digits or underscores."
+                                },
+                                {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 100,
+                                    "errorMsg": "Length of input name should be between 1 and 100"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "interval",
+                            "label": "Interval",
+                            "type": "text",
+                            "required": true,
+                            "help": "Time interval of input in seconds.",
+                            "validators": [
+                                {
+                                    "type": "regex",
+                                    "pattern": "^\\-[1-9]\\d*$|^\\d*$",
+                                    "errorMsg": "Interval must be an integer."
+                                }
+                            ]
+                        },
+                        {
+                            "field": "index",
+                            "label": "Index",
+                            "type": "singleSelect",
+                            "defaultValue": "default",
+                            "options": {
+                                "endpointUrl": "data/indexes",
+                                "blackList": "^_.*$",
+                                "createSearchChoice": true
+                            },
+                            "required": true,
+                            "validators": [
+                                {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 80,
+                                    "errorMsg": "Length of index name should be between 1 and 80."
+                                }
+                            ]
+                        },
+                        {
+                            "field": "global_account",
+                            "label": "Global Account",
+                            "help": "",
+                            "required": true,
+                            "type": "singleSelect",
+                            "options": {
+                                "referenceName": "account"
+                            }
+                        },
+                        {
+                            "field": "site_name",
+                            "label": "Site Name",
+                            "help": "Name of the site to collect from",
+                            "required": true,
+                            "type": "text",
+                            "validators": [
+                                {
+                                    "type": "string",
+                                    "minLength": 0,
+                                    "maxLength": 8192,
+                                    "errorMsg": "Max length of text input is 8192"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "fixlet_types",
+                            "label": "Fixlet Types",
+                            "help": "Select which types of fixlets to ingest.",
+                            "required": true,
+                            "type": "multipleSelect",
+                            "options": {
+                                "delimiter": "~",
+                                "items": [
+                                    {
+                                        "value": "Fixlet",
+                                        "label": "Fixlet"
+                                    },
+                                    {
+                                        "value": "Task",
+                                        "label": "Task"
+                                    },
+                                    {
+                                        "value": "Analysis",
+                                        "label": "Analysis"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "field": "set_batch_value",
+                            "label": "Set Batch Value",
+                            "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.",
+                            "required": true,
+                            "type": "text",
+                            "validators": [
+                                {
+                                    "type": "string",
+                                    "minLength": 0,
+                                    "maxLength": 8192,
+                                    "errorMsg": "Max length of text input is 8192"
+                                }
+                            ]
                         }
                     ]
                 }

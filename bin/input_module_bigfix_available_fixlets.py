@@ -86,7 +86,7 @@ def collect_events(helper, ew):
             for value in item:
                 output.append(value.replace("=","\": \"",1)+"\"")
             eventitem=space.join(output)
-            j_convert=eventitem
+            j_convert="{ \"" + eventitem + " }"
             event = helper.new_event(source=s, index=helper.get_output_index(), sourcetype=helper.get_sourcetype(), data=j_convert)
             ew.write_event(event)
         helper.log_info("job="+sourcee+" Ending MOD loop="+str(x))
