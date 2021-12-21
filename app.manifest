@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.0.0",
   "info": {
-    "title": "BigFix TA",
+    "title": "HCL BigFix Add-on for Splunk",
     "id": {
       "group": null,
       "name": "TA-bigfix",
-      "version": "3.0.2"
+      "version": "3.0.3"
     },
     "author": [
       {
