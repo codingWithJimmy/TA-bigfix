@@ -1,5 +1,6 @@
 <nav search_view="search" color="#63B8FF">
 <view name="inputs" default="true" />
 <view name="configuration"/>
+<view name="assets" label="Asset List"/>
 <view name="search" label="Search"/>
 </nav>
