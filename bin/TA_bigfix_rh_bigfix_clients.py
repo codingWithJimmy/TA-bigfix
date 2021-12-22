@@ -54,7 +54,7 @@ fields = [
         'set_batch_value',
         required=True,
         encrypted=False,
-        default=None,
+        default='1',
         validator=validator.String(
             min_len=0, 
             max_len=8192, 

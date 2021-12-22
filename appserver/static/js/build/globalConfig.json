@@ -1,10 +1,11 @@
 {
     "meta": {
         "name": "TA-bigfix",
-        "displayName": "BigFix TA",
-        "version": "3.0.1",
+        "displayName": "HCL BigFix Add-on for Splunk",
+        "version": "1.0.0",
         "apiVersion": "3.0.0",
-        "restRoot": "TA_bigfix"
+        "restRoot": "TA_bigfix",
+        "schemaVersion": "0.0.2"
     },
     "pages": {
         "configuration": {
@@ -298,8 +299,8 @@
                             "defaultValue": "default",
                             "options": {
                                 "endpointUrl": "data/indexes",
-                                "blackList": "^_.*$",
-                                "createSearchChoice": true
+                                "createSearchChoice": true,
+                                "denyList": "^_.*$"
                             },
                             "required": true,
                             "validators": [
@@ -384,8 +385,8 @@
                             "defaultValue": "default",
                             "options": {
                                 "endpointUrl": "data/indexes",
-                                "blackList": "^_.*$",
-                                "createSearchChoice": true
+                                "createSearchChoice": true,
+                                "denyList": "^_.*$"
                             },
                             "required": true,
                             "validators": [
@@ -443,6 +444,7 @@
                             "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.",
                             "required": true,
                             "type": "text",
+                            "defaultValue": "1",
                             "validators": [
                                 {
                                     "type": "string",
@@ -499,8 +501,8 @@
                             "defaultValue": "default",
                             "options": {
                                 "endpointUrl": "data/indexes",
-                                "blackList": "^_.*$",
-                                "createSearchChoice": true
+                                "createSearchChoice": true,
+                                "denyList": "^_.*$"
                             },
                             "required": true,
                             "validators": [
@@ -543,6 +545,7 @@
                             "help": "Number of batches to use for ingestion. NOTE: This number should be very large in very large environments.",
                             "required": true,
                             "type": "text",
+                            "defaultValue": "1",
                             "validators": [
                                 {
                                     "type": "string",
@@ -599,8 +602,8 @@
                             "defaultValue": "default",
                             "options": {
                                 "endpointUrl": "data/indexes",
-                                "blackList": "^_.*$",
-                                "createSearchChoice": true
+                                "createSearchChoice": true,
+                                "denyList": "^_.*$"
                             },
                             "required": true,
                             "validators": [
@@ -700,8 +703,8 @@
                             "defaultValue": "default",
                             "options": {
                                 "endpointUrl": "data/indexes",
-                                "blackList": "^_.*$",
-                                "createSearchChoice": true
+                                "createSearchChoice": true,
+                                "denyList": "^_.*$"
                             },
                             "required": true,
                             "validators": [
@@ -770,8 +773,8 @@
                             "defaultValue": "default",
                             "options": {
                                 "endpointUrl": "data/indexes",
-                                "blackList": "^_.*$",
-                                "createSearchChoice": true
+                                "createSearchChoice": true,
+                                "denyList": "^_.*$"
                             },
                             "required": true,
                             "validators": [
@@ -840,8 +843,8 @@
                             "defaultValue": "default",
                             "options": {
                                 "endpointUrl": "data/indexes",
-                                "blackList": "^_.*$",
-                                "createSearchChoice": true
+                                "createSearchChoice": true,
+                                "denyList": "^_.*$"
                             },
                             "required": true,
                             "validators": [
