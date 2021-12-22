@@ -1,4 +1,4 @@
-<form theme="light">
+<form theme="light" version="1.1">
   <label>Assets</label>
   <description>Use this dashboard to create a working asset list for Splunk Enterprise Security.</description>
   <fieldset submitButton="true" autoRun="false">
@@ -26,12 +26,17 @@
         </condition>
       </change>
     </input>
-    <input type="text" token="indexes" searchWhenChanged="true">
+    <input type="dropdown" token="indexes" searchWhenChanged="true">
       <label>Index Definition</label>
-      <default>index=bigfix</default>
       <prefix>(</prefix>
       <suffix>)</suffix>
-      <initialValue>index=bigfix</initialValue>
+      <fieldForLabel>index</fieldForLabel>
+      <fieldForValue>index</fieldForValue>
+      <search>
+        <query>| tstats count where index=* by index</query>
+        <earliest>-60m@m</earliest>
+        <latest>now</latest>
+      </search>
     </input>
   </fieldset>
   <row>
@@ -40,7 +45,7 @@
         <title>Splunk Enterprise Security Asset List (All Multi-Values)</title>
         <search>
           <query>$indexes$ (sourcetype=bigfix:asset:list OR sourcetype=bigfix:clients)
-| stats latest(ip) as ip latest(mac) as mac latest(nt_host) as nt_host latest(dns) as dns latest(owner) as owner latest(priority) as priority latest(lat) as lat latest(long) as long latest(city) as city latest(country) as country latest(bunit) as bunit latest(category) as category latest(pci_domain) as pci_domain latest(is_expected) as is_expected latest(should_timesync) as should_timesync latest(should_update) as should_update by client_id 
+| stats latest(ip) as ip latest(mac) as mac latest(nt_host) as nt_host latest(dns) as dns latest(owner) as owner latest(priority) as priority latest(lat) as lat latest(long) as long latest(city) as city latest(country) as country latest(bunit) as bunit latest(category) as category latest(pci_domain) as pci_domain latest(is_expected) as is_expected latest(should_timesync) as should_timesync latest(should_update) as should_update by client_id
 | fields - client_id</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
@@ -59,9 +64,9 @@
       <table>
         <title>Splunk Enterprise Security Asset List  (Multi-Value IP)</title>
         <search>
-          <query>$indexes$ (sourcetype=bigfix:asset:list OR sourcetype=bigfix:clients) 
-| rex "mac\": \"(?&lt;mac_single&gt;[^\|\"]+)" 
-| stats latest(ip) as ip latest(mac_single) as mac latest(nt_host) as nt_host latest(dns) as dns latest(owner) as owner latest(priority) as priority latest(lat) as lat latest(long) as long latest(city) as city latest(country) as country latest(bunit) as bunit latest(category) as category latest(pci_domain) as pci_domain latest(is_expected) as is_expected latest(should_timesync) as should_timesync latest(should_update) as should_update by client_id 
+          <query>$indexes$ (sourcetype=bigfix:asset:list OR sourcetype=bigfix:clients)
+| rex "mac\": \"(?&lt;mac_single&gt;[^\|\"]+)"
+| stats latest(ip) as ip latest(mac_single) as mac latest(nt_host) as nt_host latest(dns) as dns latest(owner) as owner latest(priority) as priority latest(lat) as lat latest(long) as long latest(city) as city latest(country) as country latest(bunit) as bunit latest(category) as category latest(pci_domain) as pci_domain latest(is_expected) as is_expected latest(should_timesync) as should_timesync latest(should_update) as should_update by client_id
 | fields - client_id</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
@@ -80,9 +85,9 @@
       <table>
         <title>Splunk Enterprise Security Asset List  (Multi-Value MAC)</title>
         <search>
-          <query>$indexes$ (sourcetype=bigfix:asset:list OR sourcetype=bigfix:clients) 
-| rex "ip\"\: \"(?&lt;ip_single&gt;[^\|\"]+)" 
-| stats latest(ip_single) as ip latest(mac) as mac latest(nt_host) as nt_host latest(dns) as dns latest(owner) as owner latest(priority) as priority latest(lat) as lat latest(long) as long latest(city) as city latest(country) as country latest(bunit) as bunit latest(category) as category latest(pci_domain) as pci_domain latest(is_expected) as is_expected latest(should_timesync) as should_timesync latest(should_update) as should_update by client_id 
+          <query>$indexes$ (sourcetype=bigfix:asset:list OR sourcetype=bigfix:clients)
+| rex "ip\"\: \"(?&lt;ip_single&gt;[^\|\"]+)"
+| stats latest(ip_single) as ip latest(mac) as mac latest(nt_host) as nt_host latest(dns) as dns latest(owner) as owner latest(priority) as priority latest(lat) as lat latest(long) as long latest(city) as city latest(country) as country latest(bunit) as bunit latest(category) as category latest(pci_domain) as pci_domain latest(is_expected) as is_expected latest(should_timesync) as should_timesync latest(should_update) as should_update by client_id
 | fields - client_id</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
