@@ -29,10 +29,10 @@ Configure the account and server information for the BigFix deployment by doing 
 - Click "Configuration" and add the account username and password provided by the BigFix administrator.	- Click the "Add-on Settings" tab and fill in the URL to the BigFix server as well as the port configured for BigFix traffic. The default port is 52311 and is filled in already. Consult your BigFix administrator and ensure this is the proper port.
 - Click the "Inputs" tab and click the "Create New Input" dropdown to configure the modular REST API inputs.
 
-# Configure the Splunk Add-on for HCL BigFix using configuration files
+# Configure the HCL BigFix Add-on for Splunk using configuration files
 It is possible to configure the add-on without the use of the Splunk Web front-end by following these steps.
 
-1. Install the Splunk Add-on for HCL BigFix into `$SPLUNK_HOME/etc/apps` and restart Splunk
+1. Install the HCL BigFix Add-on for Splunk into `$SPLUNK_HOME/etc/apps` and restart Splunk
 2. Use curl to send requests to the Splunk REST API to configure the password for the BigFix account.
 - Take note of the [bracketed] value below. This password is the password of the user account that will be used to access the BigFix server.
 ```
