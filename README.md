@@ -29,6 +29,91 @@ Configure the account and server information for the BigFix deployment by doing 
 - Click "Configuration" and add the account username and password provided by the BigFix administrator.	- Click the "Add-on Settings" tab and fill in the URL to the BigFix server as well as the port configured for BigFix traffic. The default port is 52311 and is filled in already. Consult your BigFix administrator and ensure this is the proper port.
 - Click the "Inputs" tab and click the "Create New Input" dropdown to configure the modular REST API inputs.
 
+# Configure the Splunk Add-on for HCL BigFix using configuration files
+It is possible to configure the add-on without the use of the Splunk Web front-end by following these steps.
+
+1. Install the Splunk Add-on for HCL BigFix into `$SPLUNK_HOME/etc/apps` and restart Splunk
+2. Use curl to send requests to the Splunk REST API to configure the password for the BigFix account.
+- Take note of the [bracketed] value below. This password is the password of the user account that will be used to access the BigFix server.
+```
+curl -k -u admin https://localhost:8089/servicesNS/nobody/TA-bigfix/storage/passwords -d name='BigFix``splunk_cred_sep``1' -d password='{"password": "[bigfix_user_account_password]"}' -d realm=__REST_CREDENTIAL__#TA-bigfix#configs/conf-ta_bigfix_account
+```
+- The second curl command does not need to be changed and should be added as is.
+```
+curl -k -u admin https://localhost:8089/servicesNS/nobody/TA-bigfix/storage/passwords -d name='BigFix``splunk_cred_sep``2' -d password='``splunk_cred_sep``S``splunk_cred_sep``P``splunk_cred_sep``L``splunk_cred_sep``U``splunk_cred_sep``N``splunk_cred_sep``K``splunk_cred_sep``' -d realm=__REST_CREDENTIAL__#TA-bigfix#configs/conf-ta_bigfix_account
+```
+3. Create `$SPLUNK_HOME/etc/apps/TA-bigfix/local/ta_bigfix_account.conf` and populate it with the following:
+```
+[BigFix]
+password = ********
+username = [bigfix_user_account_name]
+```
+- Add the proper BigFix user account name to the configuration in the `username` field. Do *NOT* change the value for `password`.
+4. Create `$SPLUNK_HOME/etc/apps/TA-bigfix/local/ta_bigfix_settings.conf` and populate it with the following:
+```
+[additional_parameters]
+bigfix_server_port = 52311
+bigfix_server_url = [ bigfix_server_url ]
+query_timeout_seconds = 120
+
+[logging]
+loglevel = DEBUG
+```
+- Configure the proper BigFix URL of the core server or backup server with access to the backend database to perform REST calls.
+5. Create `$SPLUNK_HOME/etc/apps/TA-bigfix/local/inputs.conf` and populate it with the following:
+```
+[bigfix_clients://Clients]
+mac_address_property = <BIGFIX_PROPERTY_FOR_MAC_ADDRESS>
+global_account = BigFix
+set_batch_value = 1
+interval = 3600
+index = <PREFERED_INDEX>
+
+[bigfix_actions://Actions]
+set_batch_value = 1
+global_account = BigFix
+disabled = 0
+interval = 3600
+index = <PREFERED_INDEX>
+
+[bigfix_available_fixlets://AvailableFixlets]
+site_name = <DESIRED_SITE_NAME>
+fixlet_types = Fixlet~Task~Analysis
+global_account = BigFix
+set_batch_value = 1
+interval = 3600
+index = <PREFERED_INDEX>
+
+[bigfix_relevant_fixlets://RelevantFixlets]
+site_name = <DESIRED_SITE_NAME>
+global_account = BigFix
+set_batch_value = 1
+interval = 3600
+index = <PREFERED_INDEX>
+
+[bigfix_infrastructure://Infrastructure]
+global_account = BigFix
+interval = 3600
+index = <PREFERED_INDEX>
+
+[bigfix_users://Users]
+global_account = BigFix
+interval = 3600
+index = <PREFERED_INDEX>
+
+[bigfix_analysis://<ANALYSIS_NAME>]
+site_name = <DESIRED_SITE_NAME>
+analysis_id = <DESIRED_ANALYSIS_ID>
+global_account = BigFix
+set_batch_value = 1
+interval = 3600
+index = <PREFERED_INDEX>
+```
+- Adjust the values for each of the inputs according to the needs of the environment.
+- See [BigFix Analysis Input](#bigfix-analysis-input) for the details on how to configure Analysis input(s).
+- See [BigFix Client Input](#bigfix-clients-input) for details on configuring the property of the MAC Address for clients.
+6. Restart Splunk
+
 # Sourcetypes
 The HCL BigFix Add-on for Splunk uses the following sourcetype format along with the log they currently support:
 
@@ -75,7 +160,9 @@ Some notes on further requirements for this input:
 
 If the MAC addresses of the clients are not being evaluated, you can use the following relevance to collect the MAC addresses of most systems that BigFix supports
 
-```if windows of operating system then concatenation "|" of (mac addresses of adapters of network) else if not windows of operating system then concatenation "|" of ((mac address of it as string) of ip interfaces whose (not loopback of it AND exists mac address of it) of network) else ""```
+```
+if windows of operating system then concatenation "|" of (mac addresses of adapters of network) else if not windows of operating system then concatenation "|" of ((mac address of it as string) of ip interfaces whose (not loopback of it AND exists mac address of it) of network) else ""
+```
 
 Once the property is configured in BigFix, you can configure the property name when you configure the input.
 
