@@ -27,7 +27,7 @@ class PyDialog(Dialog):
     def __init__(self, *args, **kw):
         """Dialog(database, name, x, y, w, h, attributes, title, first,
         default, cancel, bitmap=true)"""
-        Dialog.__init__(self, *args)
+        super().__init__(*args)
         ruler = self.h - 36
         bmwidth = 152*ruler/328
         #if kw.get("bitmap", True):
@@ -231,11 +231,7 @@ class bdist_msi(Command):
         if os.path.exists(installer_name): os.unlink(installer_name)
 
         metadata = self.distribution.metadata
-        author = metadata.author
-        if not author:
-            author = metadata.maintainer
-        if not author:
-            author = "UNKNOWN"
+        author = metadata.author or metadata.maintainer
         version = metadata.get_version()
         # ProductVersion must be strictly numeric
         # XXX need to deal with prerelease versions

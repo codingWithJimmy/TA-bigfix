@@ -1,24 +1,34 @@
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
-from __future__ import absolute_import
-from __future__ import division
-import sys
-from builtins import object
-import socket
-from . import ta_consts as c
 import os.path as op
-import splunktalib.splunk_cluster as sc
-from . import ta_helper as th
-import splunktaucclib.common.log as stulog
+import socket
+
 import splunktalib.modinput as modinput
+import splunktalib.splunk_cluster as sc
 from splunktalib.common import util
 
-basestring = str if sys.version_info[0] == 3 else basestring
+import splunktaucclib.common.log as stulog
+
+from . import ta_consts as c
+from . import ta_helper as th
+
 
 # methods can be overrided by subclass : process_task_configs
-class TaConfig(object):
+class TaConfig:
     _current_hostname = socket.gethostname()
     _appname = util.get_appname_from_path(op.abspath(__file__))
 
@@ -32,7 +42,7 @@ class TaConfig(object):
                 + "_"
                 + th.format_input_name_for_file(self._stanza_name)
             )
-            stulog.logger.info("Start {} task".format(self._stanza_name))
+            stulog.logger.info(f"Start {self._stanza_name} task")
         self._task_configs = []
         self._client_schema = client_schema
         self._server_info = sc.ServerInfo(
@@ -94,9 +104,7 @@ class TaConfig(object):
                     "should be a positive integer".format(task_config[c.interval])
                 )
         self._task_configs = all_task_configs
-        stulog.logger.info(
-            "Totally generated {} task configs".format(len(self._task_configs))
-        )
+        stulog.logger.info(f"Totally generated {len(self._task_configs)} task configs")
 
     # Override this method if some transforms or validations needs to be done
     # before task_configs is exposed
@@ -200,7 +208,7 @@ class TaConfig(object):
         return task_configs
 
     def _get_stanza_name(self, input_item):
-        if isinstance(input_item, basestring):
+        if isinstance(input_item, str):
             in_name = input_item
         else:
             in_name = input_item[c.name]

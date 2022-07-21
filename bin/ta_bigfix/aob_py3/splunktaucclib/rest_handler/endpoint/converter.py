@@ -1,19 +1,26 @@
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """
 Converters for Splunk configuration.
 """
 
-from __future__ import absolute_import
 
-import sys
-from builtins import object
 import base64
 import json
-
-basestring = str if sys.version_info[0] == 3 else basestring
 
 __all__ = [
     "Converter",
@@ -30,7 +37,7 @@ __all__ = [
 ]
 
 
-class Converter(object):
+class Converter:
     """
     Converting data: encode for in-coming request
         and decode for out-coming response.
@@ -90,7 +97,7 @@ class ChainOf(Converter):
 
         :param converters: a list of converters
         """
-        super(ChainOf, self).__init__()
+        super().__init__()
         self._converters = converters
 
     def encode(self, value, request):
@@ -135,7 +142,7 @@ class UserDefined(Converter):
         :param args:
         :param kwargs:
         """
-        super(UserDefined, self).__init__()
+        super().__init__()
         self._encoder = encoder
         self._decoder = decoder or self._encoder
         self._args = args
@@ -185,7 +192,7 @@ class Unifier(Normaliser):
         :param case_sensitive: if it is False,
             it will return lower case
         """
-        super(Unifier, self).__init__()
+        super().__init__()
         self._case_sensitive = case_sensitive
         self._default = default
         self._value_map = {}
@@ -199,7 +206,7 @@ class Unifier(Normaliser):
                 self._value_map[val_old] = val_new
 
     def normalize(self, value, data):
-        need_lower = not self._case_sensitive and isinstance(value, basestring)
+        need_lower = not self._case_sensitive and isinstance(value, str)
         val_old = value.lower() if need_lower else value
         val_default = self._default or value
         return self._value_map.get(val_old, val_default)
@@ -223,7 +230,7 @@ class Boolean(Unifier):
 
         :param default: default for unrecognizable input of boolean.
         """
-        super(Boolean, self).__init__(
+        super().__init__(
             value_map={
                 "1": Boolean.VALUES_TRUE,
                 "0": Boolean.VALUES_FALSE,
@@ -247,7 +254,7 @@ class Mapping(Converter):
         :param case_sensitive: if it is False,
             it will return lower case
         """
-        super(Mapping, self).__init__()
+        super().__init__()
         self._case_sensitive = case_sensitive
         self._map_interface, self._map_storage = {}, {}
         for interface, storage in value_map.items():

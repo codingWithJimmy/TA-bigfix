@@ -1,27 +1,40 @@
 #!/usr/bin/python
 
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """
 This is the main entry point for My TA
 """
-from __future__ import print_function
 
 import os.path as op
 import sys
 import time
-import splunktalib.modinput as modinput
+
 import splunktalib.common.util as utils
-import splunktaucclib.common.log as stulog
-from splunktaucclib.data_collection import ta_data_loader as dl
-from splunktaucclib.data_collection import ta_config as tc
-from splunktaucclib.data_collection import ta_checkpoint_manager as cpmgr
-import splunktalib.orphan_process_monitor as opm
 import splunktalib.file_monitor as fm
+import splunktalib.modinput as modinput
+import splunktalib.orphan_process_monitor as opm
+
+import splunktaucclib.common.log as stulog
 from splunktaucclib.common import load_schema_file as ld
+from splunktaucclib.data_collection import ta_checkpoint_manager as cpmgr
+from splunktaucclib.data_collection import ta_config as tc
 from splunktaucclib.data_collection import ta_data_client as tdc
+from splunktaucclib.data_collection import ta_data_loader as dl
 
 utils.remove_http_proxy_env_vars()
 
@@ -79,7 +92,7 @@ def _setup_signal_handler(data_loader, ta_short_name):
     """
 
     def _handle_exit(signum, frame):
-        stulog.logger.info("{} receives exit signal".format(ta_short_name))
+        stulog.logger.info(f"{ta_short_name} receives exit signal")
         if data_loader is not None:
             data_loader.tear_down()
 
@@ -92,16 +105,14 @@ def _handle_file_changes(data_loader):
     """
 
     def _handle_refresh(changed_files):
-        stulog.logger.info("Detect {} changed, reboot itself".format(changed_files))
+        stulog.logger.info(f"Detect {changed_files} changed, reboot itself")
         data_loader.tear_down()
 
     return _handle_refresh
 
 
 def _get_conf_files(local_file_list):
-    cur_dir = op.dirname(
-        op.dirname(op.dirname(op.dirname(op.abspath(__file__))))
-    )
+    cur_dir = op.dirname(op.dirname(op.dirname(op.dirname(op.abspath(__file__)))))
     files = []
     for f in local_file_list:
         files.append(op.join(cur_dir, "local", f))
@@ -214,7 +225,7 @@ def main(
         else:
             usage()
     else:
-        stulog.logger.info("Start {} task".format(ta_short_name))
+        stulog.logger.info(f"Start {ta_short_name} task")
         try:
             run(
                 collector_cls,
@@ -224,6 +235,6 @@ def main(
                 log_suffix=log_suffix,
             )
         except Exception as e:
-            stulog.logger.exception("{} task encounter exception".format(ta_short_name))
-        stulog.logger.info("End {} task".format(ta_short_name))
+            stulog.logger.exception(f"{ta_short_name} task encounter exception")
+        stulog.logger.info(f"End {ta_short_name} task")
     sys.exit(0)

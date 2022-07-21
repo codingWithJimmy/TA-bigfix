@@ -1,17 +1,30 @@
 #!/usr/bin/python
 
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
-from __future__ import absolute_import
-from builtins import object
-import time
 import threading
-from . import ta_consts as c
-import splunktaucclib.common.log as stulog
-import splunktalib.common.util as scu
+import time
 from collections import namedtuple
+
+import splunktalib.common.util as scu
+
+import splunktaucclib.common.log as stulog
+
+from . import ta_consts as c
 
 evt_fmt = (
     "<stream><event><host>{0}</host>"
@@ -51,7 +64,7 @@ event_tuple = namedtuple(
 )
 
 
-class TADataCollector(object):
+class TADataCollector:
     def __init__(
         self,
         tconfig,
@@ -82,9 +95,9 @@ class TADataCollector(object):
         return self._task_config[c.interval]
 
     def _get_logger_prefix(self):
-        pairs = ['{}="{}"'.format(c.stanza_name, self._task_config[c.stanza_name])]
+        pairs = [f'{c.stanza_name}="{self._task_config[c.stanza_name]}"']
         for key in self._task_config[c.divide_key]:
-            pairs.append('{}="{}"'.format(key, self._task_config[key]))
+            pairs.append(f'{key}="{self._task_config[key]}"')
         return "[{}]".format(" ".join(pairs))
 
     def stop(self):
@@ -144,7 +157,7 @@ class TADataCollector(object):
             self._checkpoint_manager,
         )
 
-        stulog.logger.debug("{} Set {}={} ".format(self._p, c.ckpt_dict, ckpt))
+        stulog.logger.debug(f"{self._p} Set {c.ckpt_dict}={ckpt} ")
         return data_client
 
     def index_data(self):
@@ -166,7 +179,7 @@ class TADataCollector(object):
 
                 self._do_safe_index()
             except Exception:
-                stulog.logger.exception("{} Failed to index data".format(self._p))
+                stulog.logger.exception(f"{self._p} Failed to index data")
             stulog.logger.info(
                 "{} End of indexing data for checkpoint_key={}".format(
                     self._p, checkpoint_key
@@ -212,13 +225,13 @@ class TADataCollector(object):
                     if not self._write_events(ckpt, events):
                         break
             except StopIteration:
-                stulog.logger.debug("{} Finished this round".format(self._p))
+                stulog.logger.debug(f"{self._p} Finished this round")
                 break
             except Exception:
-                stulog.logger.exception("{} Failed to get msg".format(self._p))
+                stulog.logger.exception(f"{self._p} Failed to get msg")
                 break
         self.stop()
         try:
             self._client.get()
         except StopIteration:
-            stulog.logger.debug("{} Invoke client.get() after stop ".format(self._p))
+            stulog.logger.debug(f"{self._p} Invoke client.get() after stop ")

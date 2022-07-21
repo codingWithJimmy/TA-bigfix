@@ -1,19 +1,29 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
-from future import standard_library
-
-standard_library.install_aliases()
-from builtins import range
-import urllib.request, urllib.parse, urllib.error
 import json
+import urllib.error
+import urllib.parse
+import urllib.request
 from traceback import format_exc
 
-import splunktalib.common.util as scu
-import splunktalib.common.log as log
+from httplib2 import Http, ProxyInfo, socks
 
-from httplib2 import socks, ProxyInfo, Http
+import splunktalib.common.log as log
+import splunktalib.common.util as scu
 
 
 def splunkd_request(
@@ -24,7 +34,7 @@ def splunkd_request(
     """
 
     headers = headers if headers is not None else {}
-    headers["Authorization"] = "Splunk {0}".format(session_key)
+    headers["Authorization"] = "Splunk {}".format(session_key)
     content_type = headers.get("Content-Type")
     if not content_type:
         content_type = headers.get("content-type")

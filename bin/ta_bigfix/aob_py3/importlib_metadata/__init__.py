@@ -7,7 +7,6 @@ import zipp
 import email
 import pathlib
 import operator
-import platform
 import textwrap
 import warnings
 import functools
@@ -19,11 +18,11 @@ from . import _adapters, _meta
 from ._collections import FreezableDefaultDict, Pair
 from ._compat import (
     NullFinder,
-    PyPy_repr,
     install,
+    pypy_partial,
 )
-from ._functools import method_cache
-from ._itertools import unique_everseen
+from ._functools import method_cache, pass_none
+from ._itertools import always_iterable, unique_everseen
 from ._meta import PackageMetadata, SimplePath
 
 from contextlib import suppress
@@ -47,16 +46,6 @@ __all__ = [
     'requires',
     'version',
 ]
-
-
-def _pypy_partial(val):
-    """
-    Adjust for variable stacklevel on partial under PyPy.
-
-    Workaround for #327.
-    """
-    is_pypy = platform.python_implementation() == 'PyPy'
-    return val + is_pypy
 
 
 class PackageNotFoundError(ModuleNotFoundError):
@@ -136,20 +125,53 @@ class Sectioned:
         return line and not line.startswith('#')
 
 
-class EntryPoint(
-    PyPy_repr, collections.namedtuple('EntryPointBase', 'name value group')
-):
+class DeprecatedTuple:
+    """
+    Provide subscript item access for backward compatibility.
+
+    >>> recwarn = getfixture('recwarn')
+    >>> ep = EntryPoint(name='name', value='value', group='group')
+    >>> ep[:]
+    ('name', 'value', 'group')
+    >>> ep[0]
+    'name'
+    >>> len(recwarn)
+    1
+    """
+
+    _warn = functools.partial(
+        warnings.warn,
+        "EntryPoint tuple interface is deprecated. Access members by name.",
+        DeprecationWarning,
+        stacklevel=pypy_partial(2),
+    )
+
+    def __getitem__(self, item):
+        self._warn()
+        return self._key()[item]
+
+
+class EntryPoint(DeprecatedTuple):
     """An entry point as defined by Python packaging conventions.
 
     See `the packaging docs on entry points
     <https://packaging.python.org/specifications/entry-points/>`_
     for more information.
+
+    >>> ep = EntryPoint(
+    ...     name=None, group=None, value='package.module:attr [extra1, extra2]')
+    >>> ep.module
+    'package.module'
+    >>> ep.attr
+    'attr'
+    >>> ep.extras
+    ['extra1', 'extra2']
     """
 
     pattern = re.compile(
         r'(?P<module>[\w.]+)\s*'
-        r'(:\s*(?P<attr>[\w.]+))?\s*'
-        r'(?P<extras>\[.*\])?\s*$'
+        r'(:\s*(?P<attr>[\w.]+)\s*)?'
+        r'((?P<extras>\[.*\])\s*)?$'
     )
     """
     A regular expression describing the syntax for an entry point,
@@ -168,6 +190,9 @@ class EntryPoint(
     """
 
     dist: Optional['Distribution'] = None
+
+    def __init__(self, name, value, group):
+        vars(self).update(name=name, value=value, group=group)
 
     def load(self):
         """Load the entry point from its definition. If only a module
@@ -192,10 +217,10 @@ class EntryPoint(
     @property
     def extras(self):
         match = self.pattern.match(self.value)
-        return list(re.finditer(r'\w+', match.group('extras') or ''))
+        return re.findall(r'\w+', match.group('extras') or '')
 
     def _for(self, dist):
-        self.dist = dist
+        vars(self).update(dist=dist)
         return self
 
     def __iter__(self):
@@ -209,15 +234,49 @@ class EntryPoint(
         warnings.warn(msg, DeprecationWarning)
         return iter((self.name, self))
 
-    def __reduce__(self):
-        return (
-            self.__class__,
-            (self.name, self.value, self.group),
-        )
-
     def matches(self, **params):
+        """
+        EntryPoint matches the given parameters.
+
+        >>> ep = EntryPoint(group='foo', name='bar', value='bing:bong [extra1, extra2]')
+        >>> ep.matches(group='foo')
+        True
+        >>> ep.matches(name='bar', value='bing:bong [extra1, extra2]')
+        True
+        >>> ep.matches(group='foo', name='other')
+        False
+        >>> ep.matches()
+        True
+        >>> ep.matches(extras=['extra1', 'extra2'])
+        True
+        >>> ep.matches(module='bing')
+        True
+        >>> ep.matches(attr='bong')
+        True
+        """
         attrs = (getattr(self, param) for param in params)
         return all(map(operator.eq, params.values(), attrs))
+
+    def _key(self):
+        return self.name, self.value, self.group
+
+    def __lt__(self, other):
+        return self._key() < other._key()
+
+    def __eq__(self, other):
+        return self._key() == other._key()
+
+    def __setattr__(self, name, value):
+        raise AttributeError("EntryPoint objects are immutable.")
+
+    def __repr__(self):
+        return (
+            f'EntryPoint(name={self.name!r}, value={self.value!r}, '
+            f'group={self.group!r})'
+        )
+
+    def __hash__(self):
+        return hash(self._key())
 
 
 class DeprecatedList(list):
@@ -252,58 +311,35 @@ class DeprecatedList(list):
     1
     """
 
+    __slots__ = ()
+
     _warn = functools.partial(
         warnings.warn,
         "EntryPoints list interface is deprecated. Cast to list if needed.",
         DeprecationWarning,
-        stacklevel=_pypy_partial(2),
+        stacklevel=pypy_partial(2),
     )
 
-    def __setitem__(self, *args, **kwargs):
-        self._warn()
-        return super().__setitem__(*args, **kwargs)
+    def _wrap_deprecated_method(method_name: str):  # type: ignore
+        def wrapped(self, *args, **kwargs):
+            self._warn()
+            return getattr(super(), method_name)(*args, **kwargs)
 
-    def __delitem__(self, *args, **kwargs):
-        self._warn()
-        return super().__delitem__(*args, **kwargs)
+        return method_name, wrapped
 
-    def append(self, *args, **kwargs):
-        self._warn()
-        return super().append(*args, **kwargs)
-
-    def reverse(self, *args, **kwargs):
-        self._warn()
-        return super().reverse(*args, **kwargs)
-
-    def extend(self, *args, **kwargs):
-        self._warn()
-        return super().extend(*args, **kwargs)
-
-    def pop(self, *args, **kwargs):
-        self._warn()
-        return super().pop(*args, **kwargs)
-
-    def remove(self, *args, **kwargs):
-        self._warn()
-        return super().remove(*args, **kwargs)
-
-    def __iadd__(self, *args, **kwargs):
-        self._warn()
-        return super().__iadd__(*args, **kwargs)
+    locals().update(
+        map(
+            _wrap_deprecated_method,
+            '__setitem__ __delitem__ append reverse extend pop remove '
+            '__iadd__ insert sort'.split(),
+        )
+    )
 
     def __add__(self, other):
         if not isinstance(other, tuple):
             self._warn()
             other = tuple(other)
         return self.__class__(tuple(self) + other)
-
-    def insert(self, *args, **kwargs):
-        self._warn()
-        return super().insert(*args, **kwargs)
-
-    def sort(self, *args, **kwargs):
-        self._warn()
-        return super().sort(*args, **kwargs)
 
     def __eq__(self, other):
         if not isinstance(other, tuple):
@@ -349,7 +385,7 @@ class EntryPoints(DeprecatedList):
         """
         Return the set of all names of all entry points.
         """
-        return set(ep.name for ep in self)
+        return {ep.name for ep in self}
 
     @property
     def groups(self):
@@ -360,21 +396,17 @@ class EntryPoints(DeprecatedList):
         >>> EntryPoints().groups
         set()
         """
-        return set(ep.group for ep in self)
+        return {ep.group for ep in self}
 
     @classmethod
     def _from_text_for(cls, text, dist):
         return cls(ep._for(dist) for ep in cls._from_text(text))
 
-    @classmethod
-    def _from_text(cls, text):
-        return itertools.starmap(EntryPoint, cls._parse_groups(text or ''))
-
     @staticmethod
-    def _parse_groups(text):
+    def _from_text(text):
         return (
-            (item.value.name, item.value.value, item.name)
-            for item in Sectioned.section_pairs(text)
+            EntryPoint(name=item.value.name, value=item.value.value, group=item.name)
+            for item in Sectioned.section_pairs(text or '')
         )
 
 
@@ -405,7 +437,7 @@ class Deprecated:
         warnings.warn,
         "SelectableGroups dict interface is deprecated. Use select.",
         DeprecationWarning,
-        stacklevel=_pypy_partial(2),
+        stacklevel=pypy_partial(2),
     )
 
     def __getitem__(self, name):
@@ -568,18 +600,6 @@ class Distribution:
         )
         return filter(None, declared)
 
-    @classmethod
-    def _local(cls, root='.'):
-        from pep517 import build, meta
-
-        system = build.compat_system(root)
-        builder = functools.partial(
-            meta.build,
-            source_dir=root,
-            system=system,
-        )
-        return PathDistribution(zipp.Path(meta.build_as_zip(builder)))
-
     @property
     def metadata(self) -> _meta.PackageMetadata:
         """Return the parsed metadata for this Distribution.
@@ -627,7 +647,6 @@ class Distribution:
         missing.
         Result may be empty if the metadata exists but is empty.
         """
-        file_lines = self._read_files_distinfo() or self._read_files_egginfo()
 
         def make_file(name, hash=None, size_str=None):
             result = PackagePath(name)
@@ -636,7 +655,11 @@ class Distribution:
             result.dist = self
             return result
 
-        return file_lines and list(starmap(make_file, csv.reader(file_lines)))
+        @pass_none
+        def make_files(lines):
+            return list(starmap(make_file, csv.reader(lines)))
+
+        return make_files(self._read_files_distinfo() or self._read_files_egginfo())
 
     def _read_files_distinfo(self):
         """
@@ -664,7 +687,7 @@ class Distribution:
 
     def _read_egg_info_reqs(self):
         source = self.read_text('requires.txt')
-        return source and self._deps_from_requires_text(source)
+        return pass_none(self._deps_from_requires_text)(source)
 
     @classmethod
     def _deps_from_requires_text(cls, source):
@@ -685,7 +708,7 @@ class Distribution:
         def make_condition(name):
             return name and f'extra == "{name}"'
 
-        def parse_condition(section):
+        def quoted_marker(section):
             section = section or ''
             extra, sep, markers = section.partition(':')
             if extra and markers:
@@ -693,8 +716,17 @@ class Distribution:
             conditions = list(filter(None, [markers, make_condition(extra)]))
             return '; ' + ' and '.join(conditions) if conditions else ''
 
+        def url_req_space(req):
+            """
+            PEP 508 requires a space between the url_spec and the quoted_marker.
+            Ref python/importlib_metadata#357.
+            """
+            # '@' is uniquely indicative of a url_req.
+            return ' ' * ('@' in req)
+
         for section in sections:
-            yield section.value + parse_condition(section.name)
+            space = url_req_space(section.value)
+            yield section.value + space + quoted_marker(section.name)
 
 
 class DistributionFinder(MetaPathFinder):
@@ -749,6 +781,9 @@ class FastPath:
     """
     Micro-optimized class for searching a path for
     children.
+
+    >>> FastPath('').children()
+    ['...']
     """
 
     @functools.lru_cache()  # type: ignore
@@ -756,14 +791,14 @@ class FastPath:
         return super().__new__(cls)
 
     def __init__(self, root):
-        self.root = str(root)
+        self.root = root
 
     def joinpath(self, child):
         return pathlib.Path(self.root, child)
 
     def children(self):
         with suppress(Exception):
-            return os.listdir(self.root or '')
+            return os.listdir(self.root or '.')
         with suppress(Exception):
             return self.zip_children()
         return []
@@ -1023,6 +1058,18 @@ def packages_distributions() -> Mapping[str, List[str]]:
     """
     pkg_to_dist = collections.defaultdict(list)
     for dist in distributions():
-        for pkg in (dist.read_text('top_level.txt') or '').split():
+        for pkg in _top_level_declared(dist) or _top_level_inferred(dist):
             pkg_to_dist[pkg].append(dist.metadata['Name'])
     return dict(pkg_to_dist)
+
+
+def _top_level_declared(dist):
+    return (dist.read_text('top_level.txt') or '').split()
+
+
+def _top_level_inferred(dist):
+    return {
+        f.parts[0] if len(f.parts) > 1 else f.with_suffix('').name
+        for f in always_iterable(dist.files)
+        if f.suffix == ".py"
+    }

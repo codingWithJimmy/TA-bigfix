@@ -1,17 +1,27 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
-from builtins import range
-from builtins import object
-import os.path as op
-import os
 import json
-import time
-import splunktalib.kv_client as kvc
-from splunktalib.common import util
-from splunktalib.common import log
+import os
+import os.path as op
 import threading
+import time
+
+import splunktalib.kv_client as kvc
+from splunktalib.common import log, util
 
 
 def get_state_store(
@@ -29,7 +39,7 @@ def get_state_store(
         return FileStateStore(meta_configs, appname)
 
 
-class BaseStateStore(object):
+class BaseStateStore:
     def __init__(self, meta_configs, appname):
         self._meta_configs = meta_configs
         self._appname = appname
@@ -57,7 +67,7 @@ class StateStore(BaseStateStore):
         Don"t use other method to visit the collection if you are using
          StateStore to visit it.
         """
-        super(StateStore, self).__init__(meta_configs, appname)
+        super().__init__(meta_configs, appname)
 
         # State cache is a dict from _key to value
         self._states_cache = {}
@@ -133,7 +143,7 @@ class FileStateStore(BaseStateStore):
         server_uri etc
         """
 
-        super(FileStateStore, self).__init__(meta_configs, appname)
+        super().__init__(meta_configs, appname)
 
     def update_state(self, key, states):
         """
@@ -178,7 +188,7 @@ class CachedFileStateStore(BaseStateStore):
         server_uri etc
         """
 
-        super(CachedFileStateStore, self).__init__(meta_configs, appname)
+        super().__init__(meta_configs, appname)
         self._states_cache = {}  # item: time, dict
         self._states_cache_lmd = {}  # item: time, dict
         self.max_cache_seconds = max_cache_seconds

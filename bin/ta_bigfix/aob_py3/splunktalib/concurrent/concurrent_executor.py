@@ -1,18 +1,29 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """
 Concurrent executor provides concurrent executing function either in
 a thread pool or a process pool
 """
 
-from builtins import object
-import splunktalib.concurrent.thread_pool as tp
 import splunktalib.concurrent.process_pool as pp
+import splunktalib.concurrent.thread_pool as tp
 
 
-class ConcurrentExecutor(object):
+class ConcurrentExecutor:
     def __init__(self, config):
         """
         :param config: dict like object, contains thread_min_size (int),

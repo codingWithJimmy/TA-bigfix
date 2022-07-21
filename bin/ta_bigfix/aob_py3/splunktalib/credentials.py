@@ -1,15 +1,26 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """
 Handles credentials related stuff
 """
 
-from builtins import str
-from builtins import range
-from builtins import object
 import re
+import warnings
+
 import defusedxml.minidom as xdm
 
 import splunktalib.common.util as util
@@ -33,11 +44,17 @@ class CredNotFound(CredException):
 
 
 def create_credential_manager(username, password, splunkd_uri, app, owner, realm):
+    warnings.warn(
+        "This function is deprecated. "
+        "Please see https://github.com/splunk/addonfactory-ta-library-python/issues/38",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     session_key = CredentialManager.get_session_key(username, password, splunkd_uri)
     return CredentialManager(splunkd_uri, session_key, app, owner, realm)
 
 
-class CredentialManager(object):
+class CredentialManager:
     """
     Credential related interfaces
     """
@@ -46,6 +63,12 @@ class CredentialManager(object):
         """
         :app: when creating/upating/deleting app is required
         """
+        warnings.warn(
+            "This class is deprecated. "
+            "Please see https://github.com/splunk/addonfactory-ta-library-python/issues/38",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
         self._app = app
         self._splunkd_uri = splunkd_uri

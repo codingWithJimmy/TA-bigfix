@@ -1,9 +1,22 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 import re
-from defusedxml import cElementTree as et
+
+from defusedxml import ElementTree as et
 
 
 def parse_conf_xml_dom(xml_content):
@@ -17,9 +30,9 @@ def parse_conf_xml_dom(xml_content):
     sub_ns = m.group(1)
     entry_path = "./{%s}entry" % ns
     stanza_path = "./{%s}title" % ns
-    key_path = "./{%s}content/{%s}dict/{%s}key" % (ns, sub_ns, sub_ns)
-    meta_path = "./{%s}dict/{%s}key" % (sub_ns, sub_ns)
-    list_path = "./{%s}list/{%s}item" % (sub_ns, sub_ns)
+    key_path = "./{{{}}}content/{{{}}}dict/{{{}}}key".format(ns, sub_ns, sub_ns)
+    meta_path = "./{{{}}}dict/{{{}}}key".format(sub_ns, sub_ns)
+    list_path = "./{{{}}}list/{{{}}}item".format(sub_ns, sub_ns)
 
     xml_conf = et.fromstring(xml_content)
     stanza_objs = []

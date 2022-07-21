@@ -1,20 +1,27 @@
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """Normalisers
 """
 
-from __future__ import absolute_import
-
-import sys
-from builtins import object
 
 __all__ = ["Normaliser", "Boolean", "StringLower", "StringUpper"]
-basestring = str if sys.version_info[0] == 3 else basestring
 
 
-class Normaliser(object):
+class Normaliser:
     """Base class of Normaliser."""
 
     _name = None
@@ -48,7 +55,7 @@ class Userdefined(Normaliser):
         """
         :param values: The collection of valid values
         """
-        super(Userdefined, self).__init__()
+        super().__init__()
         self._normaliser, self._args, self._kwargs = normaliser, args, kwargs
 
     def normalize(self, value):
@@ -66,13 +73,13 @@ class Boolean(Normaliser):
     """
 
     def __init__(self, default=True):
-        super(Boolean, self).__init__()
+        super().__init__()
         self._default = "1" if default else "0"
 
     def normalize(self, value):
         if isinstance(value, (bool, int)):
             return value and "1" or "0"
-        if not isinstance(value, basestring):
+        if not isinstance(value, str):
             return self._default
         value = value.strip().lower()
 
@@ -88,7 +95,7 @@ class StringLower(Normaliser):
     """Normalize a string to all lower cases."""
 
     def normalize(self, value):
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             return value.strip().lower()
         return value
 
@@ -97,6 +104,6 @@ class StringUpper(Normaliser):
     """Normalize a string to all upper cases."""
 
     def normalize(self, value):
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             return value.strip().upper()
         return value

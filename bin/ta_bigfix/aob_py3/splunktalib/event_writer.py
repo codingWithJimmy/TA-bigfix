@@ -1,22 +1,37 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
-from future import standard_library
-
-standard_library.install_aliases()
-from six import string_types
-from builtins import object
-import queue
 import multiprocessing
-import threading
+import queue
 import sys
+import threading
+import warnings
 from collections import Iterable
+
 from splunktalib.common import log
 
 
-class EventWriter(object):
+class EventWriter:
     def __init__(self, process_safe=False):
+        warnings.warn(
+            "This class is deprecated. "
+            "Please see https://github.com/splunk/addonfactory-ta-library-python/issues/38",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if process_safe:
             self._mgr = multiprocessing.Manager()
             self._event_queue = self._mgr.Queue(1000)
@@ -64,7 +79,7 @@ class EventWriter(object):
             try:
                 event = event_queue.get(timeout=3)
                 if event is not None:
-                    if isinstance(event, string_types):
+                    if isinstance(event, str):
                         write(event.encode("utf-8"))
                     elif isinstance(event, Iterable):
                         for evt in event:
@@ -110,7 +125,7 @@ class EventWriterWithCheckpoint(EventWriter):
                     # and value of checkpoint: (ckpt_mgr_obj, key, state)
                     events = event[0]
                     ckpt_tuple = event[1]
-                    if isinstance(events, string_types):
+                    if isinstance(events, str):
                         write(events.encode("utf-8"))
                     elif isinstance(events, Iterable):
                         for evt in events:

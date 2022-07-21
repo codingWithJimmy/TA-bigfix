@@ -1,15 +1,21 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
-from future import standard_library
-
-standard_library.install_aliases()
 import os
-import os.path as op
-import subprocess
-from configparser import ConfigParser
-from io import StringIO
+import warnings
 
 from splunktalib.common import util as scu
 
@@ -18,7 +24,12 @@ def make_splunkhome_path(parts):
     """
     create a path string by the several parts of the path
     """
-
+    warnings.warn(
+        "This function is deprecated. "
+        "Please see https://github.com/splunk/addonfactory-ta-library-python/issues/38",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     relpath = os.path.normpath(os.path.join(*parts))
 
     basepath = os.environ["SPLUNK_HOME"]  # Assume SPLUNK_HOME env has been set
@@ -28,13 +39,19 @@ def make_splunkhome_path(parts):
     # Check that we haven't escaped from intended parent directories.
     if os.path.relpath(fullpath, basepath)[0:2] == "..":
         raise ValueError(
-            'Illegal escape from parent directory "%s": %s' % (basepath, fullpath)
+            'Illegal escape from parent directory "{}": {}'.format(basepath, fullpath)
         )
 
     return fullpath
 
 
 def get_splunk_bin():
+    warnings.warn(
+        "This function is deprecated. "
+        "Please see https://github.com/splunk/addonfactory-ta-library-python/issues/38",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     if os.name == "nt":
         splunk_bin = "splunk.exe"
     else:
@@ -44,67 +61,3 @@ def get_splunk_bin():
 
 def get_appname_from_path(absolute_path):
     return scu.get_appname_from_path(absolute_path)
-
-
-def _get_merged_conf_raw(conf_name):
-    """
-    :conf_name: configure file name
-    :return: raw output of all contents for the same conf file
-    Note: it depends on SPLUNK_HOME env variable
-    """
-
-    assert conf_name
-
-    if conf_name.endswith(".conf"):
-        conf_name = conf_name[:-5]
-
-    # FIXME dynamically caculate SPLUNK_HOME
-    btool_cli = [op.join(os.environ["SPLUNK_HOME"], "bin", "btool"), conf_name, "list"]
-
-    try:
-        p = subprocess.Popen(btool_cli, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = p.communicate()
-    except OSError:
-        raise
-
-    return out
-
-
-def _get_conf_stanzas(conf_name):
-    """
-    :return: {stanza_name: stanza_configs}, dict of dict
-    """
-
-    res = _get_merged_conf_raw(conf_name)
-    res = StringIO(res)
-    parser = ConfigParser()
-    parser.optionxform = str
-    parser.readfp(res)
-    res = {}
-    for section in parser.sections():
-        res[section] = {item[0]: item[1] for item in parser.items(section)}
-    return res
-
-
-def get_splunkd_uri():
-    if "SPLUNKD_URI" in os.environ:
-        return os.environ["SPLUNKD_URI"]
-    else:
-        server_conf = _get_conf_stanzas("server")
-        if server_conf["sslConfig"]["enableSplunkdSSL"].lower() == "true":
-            http = "https://"
-        else:
-            http = "http://"
-
-        web_conf = _get_conf_stanzas("web")
-        host_port = web_conf["settings"]["mgmtHostPort"]
-        splunkd_uri = "{}{}".format(http, host_port)
-
-        if os.environ.get("SPLUNK_BINDIP"):
-            bip = os.environ["SPLUNK_BINDIP"]
-            port_idx = bip.rfind(":")
-            if port_idx > 0:
-                bip = bip[:port_idx]
-            port = host_port[host_port.rfind(":") :]
-            splunkd_uri = "{}{}{}".format(http, bip, port)
-        return splunkd_uri

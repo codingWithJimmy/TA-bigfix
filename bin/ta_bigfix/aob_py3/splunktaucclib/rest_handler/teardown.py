@@ -1,6 +1,18 @@
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """REST Manager for cleaning configuration in add-on.
 
@@ -8,11 +20,7 @@ It will return endpoints that failed to be cleaned.
 
 """
 
-from __future__ import absolute_import
 
-from future import standard_library
-
-standard_library.install_aliases()
 import json
 import logging
 from inspect import ismethod
@@ -20,12 +28,10 @@ from itertools import chain as iter_chain
 from urllib.parse import quote
 
 from splunk import admin, rest
-
 from splunktalib.rest import splunkd_request
 
 from . import base
 from .error_ctl import RestHandlerError as RH_Err
-
 
 __all__ = ["DataInputHandler", "DataInputModel"]
 
@@ -37,7 +43,7 @@ class TeardownHandler(base.BaseRestHandler):
         admin.MConfigHandler.__init__(self, *args, **kwargs)
 
         assert hasattr(self, "targets") and self.targets, RH_Err.ctl(
-            1002, msgx="{}.targets".format(self._getHandlerName()), shouldPrint=False
+            1002, msgx=f"{self._getHandlerName()}.targets", shouldPrint=False
         )
         assert hasattr(self, "getArgs") and ismethod(self.getArgs), RH_Err.ctl(
             1002, msgx="%s.getArgs" % (self._getHandlerName()), shouldPrint=False

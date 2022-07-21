@@ -1,12 +1,23 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """
 This module hanles configuration related stuff
 """
 
-from builtins import object
 import os.path as op
 
 import splunktalib.conf_manager.conf_endpoints as scmc
@@ -22,7 +33,7 @@ def conf_file2name(conf_file):
     return conf_name
 
 
-class ConfManager(object):
+class ConfManager:
     def __init__(self, splunkd_uri, session_key, owner="nobody", app_name="-"):
         """
         :app_name: when creating conf stanza, app_name is required to set not

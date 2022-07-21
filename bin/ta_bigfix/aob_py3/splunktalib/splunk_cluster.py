@@ -1,10 +1,22 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+import warnings
 
-from builtins import object
-import splunktalib.rest as rest
 import splunktalib.common.xml_dom_parser as xdp
+import splunktalib.rest as rest
 
 
 def _do_rest(uri, session_key):
@@ -22,8 +34,16 @@ def _do_rest(uri, session_key):
     return stanza_objs[0]
 
 
-class ServerInfo(object):
+class ServerInfo:
     def __init__(self, splunkd_uri, session_key):
+        warnings.warn(
+            "splunktalib's ServerInfo is going to be deprecated and removed. "
+            "Please switch to solnlib's "
+            "(https://github.com/splunk/addonfactory-solutions-library-python) "
+            "version of ServerInfo located in server_info.py.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         uri = "{}/services/server/info".format(splunkd_uri)
         server_info = _do_rest(uri, session_key)
         if server_info is None:
@@ -55,24 +75,3 @@ class ServerInfo(object):
 
     def to_dict(self):
         return self._server_info
-
-
-if __name__ == "__main__":
-    import splunktalib.credentials as cred
-
-    sp_uri = "https://localhost:8089"
-    skey = cred.CredentialManager.get_session_key("admin", "admin")
-    si = ServerInfo(sp_uri, skey)
-    assert not si.is_captain()
-
-    sp_uri = "https://qa-systest-03.sv.splunk.com:1901"
-    skey = cred.CredentialManager.get_session_key("admin", "notchagneme")
-    si = ServerInfo(sp_uri, skey)
-    assert si.is_captain()
-    assert si.is_search_head()
-
-    sp_uri = "https://qa-systest-01.sv.splunk.com:1901"
-    skey = cred.CredentialManager.get_session_key("admin", "notchagneme")
-    si = ServerInfo(sp_uri, skey)
-    assert not si.is_captain()
-    assert si.is_search_head()

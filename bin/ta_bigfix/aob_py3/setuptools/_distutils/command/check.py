@@ -2,6 +2,8 @@
 
 Implements the Distutils 'check' command.
 """
+from email.utils import getaddresses
+
 from distutils.core import Command
 from distutils.errors import DistutilsSetupError
 
@@ -17,7 +19,7 @@ try:
         def __init__(self, source, report_level, halt_level, stream=None,
                      debug=0, encoding='ascii', error_handler='replace'):
             self.messages = []
-            Reporter.__init__(self, source, report_level, halt_level, stream,
+            super().__init__(source, report_level, halt_level, stream,
                               debug, encoding, error_handler)
 
         def system_message(self, level, message, *children, **kwargs):
@@ -80,34 +82,19 @@ class check(Command):
         """Ensures that all required elements of meta-data are supplied.
 
         Required fields:
-            name, version, URL
-
-        Recommended fields:
-            (author and author_email) or (maintainer and maintainer_email))
+            name, version
 
         Warns if any are missing.
         """
         metadata = self.distribution.metadata
 
         missing = []
-        for attr in ('name', 'version', 'url'):
-            if not (hasattr(metadata, attr) and getattr(metadata, attr)):
+        for attr in 'name', 'version':
+            if not getattr(metadata, attr, None):
                 missing.append(attr)
 
         if missing:
-            self.warn("missing required meta-data: %s"  % ', '.join(missing))
-        if metadata.author:
-            if not metadata.author_email:
-                self.warn("missing meta-data: if 'author' supplied, " +
-                          "'author_email' should be supplied too")
-        elif metadata.maintainer:
-            if not metadata.maintainer_email:
-                self.warn("missing meta-data: if 'maintainer' supplied, " +
-                          "'maintainer_email' should be supplied too")
-        else:
-            self.warn("missing meta-data: either (author and author_email) " +
-                      "or (maintainer and maintainer_email) " +
-                      "should be supplied")
+            self.warn("missing required meta-data: %s" % ', '.join(missing))
 
     def check_restructuredtext(self):
         """Checks if the long string fields are reST-compliant."""

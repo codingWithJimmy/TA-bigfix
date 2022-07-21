@@ -1,21 +1,29 @@
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
-from __future__ import absolute_import
 
-from future import standard_library
-
-standard_library.install_aliases()
-from builtins import object
-import urllib.request, urllib.parse, urllib.error
 import json
 import re
+import urllib.error
+import urllib.parse
+import urllib.request
 
 from splunk import admin, rest
-
-from splunktalib.rest import splunkd_request, code_to_msg, build_http_connection
 from splunktalib.common.util import is_true
+from splunktalib.rest import build_http_connection, code_to_msg, splunkd_request
 
 from . import base
 from .error_ctl import RestHandlerError as RH_Err
@@ -34,7 +42,7 @@ class PosterHandler(base.BaseRestHandler):
         assert hasattr(self, "modelMap") and isinstance(
             self.modelMap, dict
         ), RH_Err.ctl(
-            1002, msgx="{}.modelMap".format(self.__class__.__name__), shouldPrint=False
+            1002, msgx=f"{self.__class__.__name__}.modelMap", shouldPrint=False
         )
 
         if self.requestedAction != admin.ACTION_EDIT:
@@ -46,7 +54,7 @@ class PosterHandler(base.BaseRestHandler):
     def setModel(self, name):
         # get model for object
         if name not in self.modelMap:
-            RH_Err.ctl(404, msgx="object={name}".format(name=name))
+            RH_Err.ctl(404, msgx=f"object={name}")
         self.model = self.modelMap[name]
 
         # load attributes from model
@@ -125,7 +133,7 @@ class PosterModel(base.BaseModel):
     allowedMethods = ()
 
 
-class PosterMapping(object):
+class PosterMapping:
     """Mapping from object name to poster model."""
 
     # mapping object name to handler model class

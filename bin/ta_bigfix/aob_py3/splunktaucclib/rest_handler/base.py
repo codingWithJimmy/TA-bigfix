@@ -1,32 +1,41 @@
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """Base Handler Class of REST Manager.
 """
 
-from __future__ import absolute_import
-import sys
-from builtins import object
-import logging
-import json
 import copy
 import itertools
+import json
+import logging
+import sys
 from inspect import ismethod
 from os import path as op
 
-from splunk import admin, entity, rest, ResourceNotFound, RESTException
+from splunk import ResourceNotFound, RESTException, admin, entity, rest
 from splunktalib.common import util as sc_util
 from splunktalib.rest import splunkd_request
 
 import splunktaucclib.common.log as stulog
-from splunktaucclib.rest_handler.util import makeConfItem
-from splunktaucclib.rest_handler.error_ctl import RestHandlerError as RH_Err
 from splunktaucclib.rest_handler.cred_mgmt import CredMgmt
+from splunktaucclib.rest_handler.error_ctl import RestHandlerError as RH_Err
+from splunktaucclib.rest_handler.util import makeConfItem
 
 __all__ = ["user_caps", "BaseRestHandler", "BaseModel", "ResourceHandler"]
 
-basestring = str if sys.version_info[0] == 3 else basestring
 APP_NAME = sc_util.get_appname_from_path(op.abspath(__file__))
 
 
@@ -118,7 +127,7 @@ class BaseRestHandler(admin.MConfigHandler):
             except ResourceNotFound:
                 self.exist4sync = False
             except Exception as exc:
-                RH_Err.ctl(1102, msgx="object=%s, err=%s" % (self.callerArgs.id, exc))
+                RH_Err.ctl(1102, msgx=f"object={self.callerArgs.id}, err={exc}")
             else:
                 self.exist4sync = True
         self._cred_mgmt = self.get_cred_mgmt(self.endpoint)
@@ -184,9 +193,9 @@ class BaseRestHandler(admin.MConfigHandler):
 
     def get_cred_mgmt(self, endpoint):
         # credential fields
-        self.encryptedArgs = set(
-            [(self.keyMap.get(arg) or arg) for arg in self.encryptedArgs]
-        )
+        self.encryptedArgs = {
+            (self.keyMap.get(arg) or arg) for arg in self.encryptedArgs
+        }
         user, app = self.user_app()
         return CredMgmt(
             sessionKey=self.getSessionKey(),
@@ -385,7 +394,7 @@ class BaseRestHandler(admin.MConfigHandler):
             except ResourceNotFound:
                 RH_Err.ctl(
                     1021,
-                    msgx="endpoint=%s, item=%s" % (self.endpoint, name),
+                    msgx=f"endpoint={self.endpoint}, item={name}",
                     shouldPrint=False,
                     shouldRaise=False,
                 )
@@ -621,7 +630,7 @@ class BaseRestHandler(admin.MConfigHandler):
             stulog.logger.info(msg)
 
 
-class BaseModel(object):
+class BaseModel:
     """Model of Data.
     It ensure that key/value stored in *.conf are mapped to storage key/value,
     key/value shown to user are mapped to interface key/value.
@@ -683,9 +692,7 @@ class BaseModel(object):
                 if not self.validators[k].validate(v, args):
                     RH_Err.ctl(
                         1100,
-                        msgx=(
-                            "{msg} - field={k}".format(msg=self.validators[k].msg, k=k)
-                        ),
+                        msgx=(f"{self.validators[k].msg} - field={k}"),
                         logLevel=logging.INFO,
                     )
         return args
@@ -697,7 +704,7 @@ class BaseModel(object):
                 continue
             if isinstance(vs, list) or isinstance(vs, dict) or isinstance(vs, tuple):
                 data[k] = [
-                    self.normalisers[k].normalize(v) if isinstance(v, basestring) else v
+                    self.normalisers[k].normalize(v) if isinstance(v, str) else v
                     for v in vs
                 ]
             else:

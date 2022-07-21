@@ -1,22 +1,31 @@
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """Error control
 """
 
-from __future__ import absolute_import
 
-from builtins import object
-import sys
-import re
 import logging
+import re
+import sys
 import traceback
 
 from splunk import RESTException
 
 import splunktaucclib.common.log as stulog
-
 
 __all__ = ["RestHandlerError", "ERROR_MAPPING"]
 
@@ -47,7 +56,7 @@ ERROR_MAPPING = {
 }
 
 
-class RestHandlerError(object):
+class RestHandlerError:
     """Control Error in Splunk Add-on REST API.
     code-message mapping for errors:
         code < 1000: splunkd internal error, occurred while
@@ -65,7 +74,7 @@ class RestHandlerError(object):
 
     def __str__(self):
         msgx = (self._msgx and self._msgx != self._msg) and " - %s" % self._msgx or ""
-        return "REST ERROR[%s]: %s%s" % (self._code, self._msg, msgx)
+        return f"REST ERROR[{self._code}]: {self._msg}{msgx}"
 
     def _conv(self, exc):
         """Convert a Exception form 'splunk.rest.simpleRequest'"""
@@ -141,7 +150,7 @@ class RestHandlerError(object):
             else ""
         )
 
-        stulog.logger.log(logLevel, "%s%s" % (err, tb), exc_info=1)
+        stulog.logger.log(logLevel, f"{err}{tb}", exc_info=1)
         if shouldPrint:
             sys.stdout.write(str(err))
         if shouldRaise:

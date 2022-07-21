@@ -1,12 +1,22 @@
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
-import sys
 import logging
-import splunktalib.common.log as stclog
 
-basestring = str if sys.version_info[0] == 3 else basestring
+import splunktalib.common.log as stclog
 
 _level_by_name = {
     "DEBUG": logging.DEBUG,
@@ -21,7 +31,7 @@ _level_by_name = {
 def _get_log_level(log_level, default_level=logging.INFO):
     if not log_level:
         return default_level
-    if isinstance(log_level, basestring):
+    if isinstance(log_level, str):
         log_level = log_level.upper()
         for k, v in _level_by_name.items():
             if k.startswith(log_level):

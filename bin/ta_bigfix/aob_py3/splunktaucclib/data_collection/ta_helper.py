@@ -1,19 +1,29 @@
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
-
-from builtins import object
-import os.path as op
-import threading
-import re
-from datetime import datetime
-from calendar import timegm
-import splunktaucclib.common.log as stulog
-import splunktaucclib.config as sc
-from splunktalib.common import util
-from splunktaucclib.data_collection import ta_consts as c
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 import hashlib
 import json
+import os.path as op
+import re
+from calendar import timegm
+from datetime import datetime
+
+from splunktalib.common import util
+
+import splunktaucclib.config as sc
+from splunktaucclib.data_collection import ta_consts as c
 
 
 def utc2timestamp(human_time):
@@ -43,10 +53,7 @@ def get_md5(data):
     :return:
     """
     assert data is not None, "The input cannot be None"
-    try:
-        string_type = isinstance(data, (unicode, str))
-    except:
-        string_type = isinstance(data, (str))
+    string_type = isinstance(data, str)
     if string_type:
         return hashlib.sha256(data.encode("utf-8")).hexdigest()
     elif isinstance(data, (list, tuple, dict)):
@@ -58,10 +65,10 @@ def format_input_name_for_file(name):
 
     base64_name = base64.b64encode(name.encode("utf-8"), b"__").decode("ascii")
     qualified_name_str = re.sub(r"[^a-zA-Z0-9]+", "_", name)
-    return "{}_B64_{}".format(qualified_name_str, base64_name)
+    return f"{qualified_name_str}_B64_{base64_name}"
 
 
-class ConfigSchemaHandler(object):
+class ConfigSchemaHandler:
     _app_name = util.get_appname_from_path(op.abspath(__file__))
     # Division schema keys.
     TYPE = "type"
@@ -138,7 +145,7 @@ class ConfigSchemaHandler(object):
         return division_metrics
 
 
-class DivisionRule(object):
+class DivisionRule:
     def __init__(self, endpoint, metric, type, separator, refer):
         self._endpoint = endpoint
         self._metric = metric

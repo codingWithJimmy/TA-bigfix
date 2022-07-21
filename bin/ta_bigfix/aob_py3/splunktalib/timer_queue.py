@@ -1,25 +1,34 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """
 A timer queue implementation
 """
 
-from future import standard_library
-
-standard_library.install_aliases()
-from builtins import object
-import threading
 import queue
-from time import time
+import threading
 import traceback
+import warnings
+from time import time
 
-from splunktalib.timer import Timer
 from splunktalib.common import log
+from splunktalib.timer import Timer
 
 
-class TimerQueue(object):
+class TimerQueue:
     """
     A timer queue implementation, runs a separate thread to handle timers
     """
@@ -27,6 +36,12 @@ class TimerQueue(object):
     import sortedcontainers as sc
 
     def __init__(self):
+        warnings.warn(
+            "This class is deprecated. "
+            "Please see https://github.com/splunk/addonfactory-ta-library-python/issues/38",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self._timers = TimerQueue.sc.SortedSet()
         self._cancelling_timers = {}
         self._lock = threading.Lock()

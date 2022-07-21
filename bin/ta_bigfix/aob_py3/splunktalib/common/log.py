@@ -1,6 +1,18 @@
-# SPDX-FileCopyrightText: 2020 Splunk Inc.
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """
 Copyright (C) 2005-2019 Splunk Inc. All Rights Reserved.
@@ -8,15 +20,15 @@ Copyright (C) 2005-2019 Splunk Inc. All Rights Reserved.
 log utility for TA
 """
 
-from builtins import object
 import logging
 import logging.handlers as handlers
 import os.path as op
-from splunktalib.splunk_platform import make_splunkhome_path
+import time
+import warnings
+
 import splunktalib.common.util as cutil
 from splunktalib.common.pattern import singleton
-
-import time
+from splunktalib.splunk_platform import make_splunkhome_path
 
 logging.Formatter.converter = time.gmtime
 
@@ -25,6 +37,12 @@ def log_enter_exit(logger):
     """
     Log decorator to log function enter and exit
     """
+    warnings.warn(
+        "This function is deprecated. "
+        "Please see https://github.com/splunk/addonfactory-ta-library-python/issues/38",
+        DeprecationWarning,
+        stacklevel=2,
+    )
 
     def log_decorator(func):
         def wrapper(*args, **kwargs):
@@ -39,8 +57,14 @@ def log_enter_exit(logger):
 
 
 @singleton
-class Logs(object):
+class Logs:
     def __init__(self, namespace=None, default_level=logging.INFO):
+        warnings.warn(
+            "This class is deprecated. "
+            "Please see https://github.com/splunk/addonfactory-ta-library-python/issues/38",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self._loggers = {}
         self._default_level = default_level
         if namespace is None:
@@ -129,6 +153,12 @@ def reset_logger(name):
     """
     Reset global logger.
     """
+    warnings.warn(
+        "This function is deprecated. "
+        "Please see https://github.com/splunk/addonfactory-ta-library-python/issues/38",
+        DeprecationWarning,
+        stacklevel=2,
+    )
 
     global logger
     logger = Logs().get_logger(name)

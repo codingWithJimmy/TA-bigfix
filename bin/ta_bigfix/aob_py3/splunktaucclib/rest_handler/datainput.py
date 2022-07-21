@@ -1,6 +1,18 @@
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """REST Manager for data inputs (a wrapper of data inputs).
 
@@ -8,15 +20,10 @@ Note: It manages inputs.conf
 
 """
 
-from __future__ import absolute_import
-from future import standard_library
-
-standard_library.install_aliases()
-from builtins import map
-import sys
+import collections
 import json
 import logging
-import collections
+import sys
 from urllib.parse import quote
 
 from splunk import admin, rest
@@ -24,9 +31,7 @@ from splunk import admin, rest
 from . import base, util
 from .error_ctl import RestHandlerError as RH_Err
 
-
 __all__ = ["DataInputHandler", "DataInputModel"]
-basestring = str if sys.version_info[0] == 3 else basestring
 
 
 class DataInputHandler(base.BaseRestHandler):
@@ -36,7 +41,7 @@ class DataInputHandler(base.BaseRestHandler):
         base.BaseRestHandler.__init__(self, *args, **kwargs)
         assert hasattr(self, "dataInputName") and self.dataInputName, RH_Err.ctl(
             1002,
-            msgx="{}.dataInputName".format(self._getHandlerName()),
+            msgx=f"{self._getHandlerName()}.dataInputName",
             shouldPrint=False,
         )
 
@@ -184,7 +189,7 @@ class DataInputHandler(base.BaseRestHandler):
         return err["messages"][0]["text"]
 
     def convert(self, data):
-        if isinstance(data, basestring):
+        if isinstance(data, str):
             return data.encode("utf-8")
         elif isinstance(data, collections.Mapping):
             return dict(list(map(self.convert, iter(data.items()))))

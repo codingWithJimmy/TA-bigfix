@@ -1,6 +1,18 @@
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """REST handler for multiple models with different structure in one *.conf.
 It assumes that there are enumerable objects in every model,
@@ -13,9 +25,7 @@ via REST or *.conf directly.
 This handler is for some global settings like proxy, logging, etc.
 """
 
-from __future__ import absolute_import
 
-from builtins import object
 import logging
 
 import splunk
@@ -69,7 +79,7 @@ class MultiModelRestHandler(base.BaseRestHandler):
         if name not in self.modelMap:
             RH_Err.ctl(
                 404,
-                msgx="object={name}".format(name=name, handler=self.__class__.__name__),
+                msgx=f"object={name}",
             )
         self.model = self.modelMap[name]
 
@@ -84,9 +94,9 @@ class MultiModelRestHandler(base.BaseRestHandler):
         self.__dict__.update(attrs)
 
         # credential fields
-        self.encryptedArgs = set(
-            [(self.keyMap.get(arg) or arg) for arg in self.encryptedArgs]
-        )
+        self.encryptedArgs = {
+            (self.keyMap.get(arg) or arg) for arg in self.encryptedArgs
+        }
         user, app = self.user_app()
         self._cred_mgmt = CredMgmt(
             sessionKey=self.getSessionKey(),
@@ -142,10 +152,10 @@ class MultiModelRestHandler(base.BaseRestHandler):
             RH_Err.ctl(-1, exc, logLevel=logging.INFO)
 
     def _getHandlerName(self):
-        return "%s.%s" % (self.__class__.__name__, self.model.__name__)
+        return f"{self.__class__.__name__}.{self.model.__name__}"
 
 
-class MultiModel(object):
+class MultiModel:
     """Mapping from object name to model, which means stanzas with
     different structure will be stored in same endpoint.
     """

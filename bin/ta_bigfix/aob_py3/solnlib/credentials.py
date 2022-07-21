@@ -1,21 +1,28 @@
-# Copyright 2016 Splunk, Inc.
-# SPDX-FileCopyrightText: 2020 2020
 #
-# SPDX-License-Identifier: Apache-2.0
+# Copyright 2021 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
-"""
-This module contains Splunk credential related interfaces.
-"""
+"""This module contains Splunk credential related interfaces."""
 
 import json
 import re
 
-from . import splunk_rest_client as rest_client
-from .net_utils import check_css_params
-from .net_utils import is_valid_hostname
-from .net_utils import is_valid_port
-from .net_utils import is_valid_scheme
 from splunklib import binding
+
+from . import splunk_rest_client as rest_client
+from .net_utils import validate_scheme_host_port
 from .splunkenv import get_splunkd_access_info
 from .utils import retry
 
@@ -28,35 +35,21 @@ __all__ = [
 
 
 class CredentialException(Exception):
+    """General exception regarding credentials."""
+
     pass
 
 
 class CredentialNotExistException(Exception):
+    """Exception is raised when credentials do not exist."""
+
     pass
 
 
-class CredentialManager(object):
+class CredentialManager:
     """Credential manager.
 
-    :param session_key: Splunk access token.
-    :type session_key: ``string``
-    :param app: App name of namespace.
-    :type app: ``string``
-    :param owner: (optional) Owner of namespace, default is `nobody`.
-    :type owner: ``string``
-    :param realm: (optional) Realm of credential, default is None.
-    :type realm: ``string``
-    :param scheme: (optional) The access scheme, default is None.
-    :type scheme: ``string``
-    :param host: (optional) The host name, default is None.
-    :type host: ``string``
-    :param port: (optional) The port number, default is None.
-    :type port: ``integer``
-    :param context: Other configurations for Splunk rest client.
-    :type context: ``dict``
-
-    Usage::
-
+    Examples:
        >>> from solnlib import credentials
        >>> cm = credentials.CredentialManager(session_key,
                                               'Splunk_TA_test',
@@ -77,15 +70,27 @@ class CredentialManager(object):
 
     def __init__(
         self,
-        session_key,
-        app,
-        owner="nobody",
-        realm=None,
-        scheme=None,
-        host=None,
-        port=None,
-        **context
+        session_key: str,
+        app: str,
+        owner: str = "nobody",
+        realm: str = None,
+        scheme: str = None,
+        host: str = None,
+        port: int = None,
+        **context: dict,
     ):
+        """Initializes CredentialsManager.
+
+        Arguments:
+            session_key: Splunk access token.
+            app: App name of namespace.
+            owner: (optional) Owner of namespace, default is `nobody`.
+            realm: (optional) Realm of credential, default is None.
+            scheme: (optional) The access scheme, default is None.
+            host: (optional) The host name, default is None.
+            port: (optional) The port number, default is None.
+            context: Other configurations for Splunk rest client.
+        """
         self._realm = realm
         self.service = rest_client.SplunkRestClient(
             session_key,
@@ -94,24 +99,24 @@ class CredentialManager(object):
             scheme=scheme,
             host=host,
             port=port,
-            **context
+            **context,
         )
         self._storage_passwords = self.service.storage_passwords
 
     @retry(exceptions=[binding.HTTPError])
-    def get_password(self, user):
+    def get_password(self, user: str) -> str:
         """Get password.
 
-        :param user: User name.
-        :type user: ``string``
-        :returns: Clear user password.
-        :rtype: ``string``
+        Arguments:
+            user: User name.
 
-        :raises CredentialNotExistException: If password for 'realm:user'
-            doesn't exist.
+        Returns:
+            Clear user password.
 
-        Usage::
+        Raises:
+            CredentialNotExistException: If password for 'realm:user' doesn't exist.
 
+        Examples:
            >>> from solnlib import credentials
            >>> cm = credentials.CredentialManager(session_key,
                                                   'Splunk_TA_test',
@@ -125,20 +130,18 @@ class CredentialManager(object):
                 return password["clear_password"]
 
         raise CredentialNotExistException(
-            "Failed to get password of realm=%s, user=%s." % (self._realm, user)
+            f"Failed to get password of realm={self._realm}, user={user}."
         )
 
     @retry(exceptions=[binding.HTTPError])
-    def set_password(self, user, password):
+    def set_password(self, user: str, password: str):
         """Set password.
 
-        :param user: User name.
-        :type user: ``string``
-        :param password: User password.
-        :type password: ``string``
+        Arguments:
+            user: User name.
+            password: User password.
 
-        Usage::
-
+        Examples:
            >>> from solnlib import credentials
            >>> cm = credentials.CredentialManager(session_key,
                                                   'Splunk_TA_test',
@@ -159,16 +162,14 @@ class CredentialManager(object):
         self._update_password(partial_user, self.END_MARK)
 
     @retry(exceptions=[binding.HTTPError])
-    def _update_password(self, user, password):
+    def _update_password(self, user: str, password: str):
         """Update password.
 
-        :param user: User name.
-        :type user: ``string``
-        :param password: User password.
-        :type password: ``string``
+        Arguments:
+            user: User name.
+            password: User password.
 
-        Usage::
-
+        Examples:
            >>> from solnlib import credentials
            >>> cm = credentials.CredentialManager(session_key,
                                                   'Splunk_TA_test',
@@ -192,17 +193,16 @@ class CredentialManager(object):
                 raise ex
 
     @retry(exceptions=[binding.HTTPError])
-    def delete_password(self, user):
+    def delete_password(self, user: str):
         """Delete password.
 
-        :param user: User name.
-        :type user: ``string``
+        Arguments:
+            user: User name.
 
-        :raises CredentialNotExistException: If password of realm:user
-            doesn't exist.
+        Raises:
+             CredentialNotExistException: If password of realm:user doesn't exist.
 
-        Usage::
-
+        Examples:
            >>> from solnlib import credentials
            >>> cm = credentials.CredentialManager(session_key,
                                                   'Splunk_TA_test',
@@ -211,7 +211,9 @@ class CredentialManager(object):
         """
         all_passwords = self._get_all_passwords_in_realm()
         deleted = False
-        ent_pattern = re.compile("(%s%s\d+)" % (user.replace("\\", "\\\\"), self.SEP))
+        ent_pattern = re.compile(
+            r"({}{}\d+)".format(user.replace("\\", "\\\\"), self.SEP)
+        )
         for password in list(all_passwords):
             match = (user == password.username) or ent_pattern.match(password.username)
             if match and password.realm == self._realm:
@@ -220,13 +222,15 @@ class CredentialManager(object):
 
         if not deleted:
             raise CredentialNotExistException(
-                "Failed to delete password of realm=%s, user=%s" % (self._realm, user)
+                "Failed to delete password of realm={}, user={}".format(
+                    self._realm, user
+                )
             )
 
     def _get_all_passwords_in_realm(self):
         if self._realm:
             all_passwords = self._storage_passwords.list(
-                count=-1, search="realm={}".format(self._realm)
+                count=-1, search=f"realm={self._realm}"
             )
         else:
             all_passwords = self._storage_passwords.list(count=-1, search="")
@@ -237,7 +241,7 @@ class CredentialManager(object):
         all_passwords = self._storage_passwords.list(count=-1)
 
         results = {}
-        ptn = re.compile(r"(.+){cred_sep}(\d+)".format(cred_sep=self.SEP))
+        ptn = re.compile(fr"(.+){self.SEP}(\d+)")
         for password in all_passwords:
             match = ptn.match(password.name)
             if match:
@@ -285,32 +289,35 @@ class CredentialManager(object):
 
 
 @retry(exceptions=[binding.HTTPError])
-@check_css_params(scheme=is_valid_scheme, host=is_valid_hostname, port=is_valid_port)
-def get_session_key(username, password, scheme=None, host=None, port=None, **context):
+def get_session_key(
+    username: str,
+    password: str,
+    scheme: str = None,
+    host: str = None,
+    port: int = None,
+    **context: dict,
+) -> str:
     """Get splunkd access token.
 
-    :param username: The Splunk account username, which is used to
-        authenticate the Splunk instance.
-    :type username: ``string``
-    :param password: The Splunk account password.
-    :type password: ``string``
-    :param scheme: (optional) The access scheme, default is None.
-    :type scheme: ``string``
-    :param host: (optional) The host name, default is None.
-    :type host: ``string``
-    :param port: (optional) The port number, default is None.
-    :type port: ``integer``
-    :returns: Splunk session key.
-    :rtype: ``string``
-    :param context: Other configurations for Splunk rest client.
-    :type context: ``dict``
+    Arguments:
+        username: The Splunk account username, which is used to authenticate the Splunk instance.
+        password: The Splunk account password.
+        scheme: (optional) The access scheme, default is None.
+        host: (optional) The host name, default is None.
+        port: (optional) The port number, default is None.
+        context: Other configurations for Splunk rest client.
 
-    :raises CredentialException: If username/password are Invalid.
+    Returns:
+        Splunk session key.
 
-    Usage::
+    Raises:
+        CredentialException: If username/password are invalid.
+        ValueError: if scheme, host or port are invalid.
 
+    Examples:
        >>> credentials.get_session_key('user', 'password')
     """
+    validate_scheme_host_port(scheme, host, port)
 
     if any([scheme is None, host is None, port is None]):
         scheme, host, port = get_splunkd_access_info()
